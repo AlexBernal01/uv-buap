@@ -19,7 +19,9 @@ export default function Header() {
           <Link to="/productos" className="hover:text-buap-azul-claro transition">Productos</Link>
           <Link to="/noticias" className="hover:text-buap-azul-claro transition">Noticias</Link>
           <Link to="/cursos" className="hover:text-buap-azul-claro transition">Cursos</Link>
+          <Link to="/banco-prompters" className="hover:text-buap-azul-claro transition">Banco de Prompts</Link>
           <Link to="/sobre-nosotros" className="hover:text-buap-azul-claro transition">Sobre Nosotros</Link>
+          
         </nav>
       </div>
     </header>

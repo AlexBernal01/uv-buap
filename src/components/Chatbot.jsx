@@ -1,14 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI } from '@google/genai';
-import { promptsCarreras } from '../data/contenido';
 import { UVIE_BASE64 } from '../data/uvie-base64';
-import { Link } from 'react-router-dom';
 
 const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
-const SYSTEM_PROMPT_BASE = `Eres el asistente virtual de la UVIE (Unidad de Vinculación en Inteligencia Estratégica) de la Facultad de Administración de la BUAP.
+// Contextos integrados para evitar el error de importación
+const CONTEXTOS_CARRERAS = {
+  general: 'Eres un asistente experto de la Facultad de Administración de la BUAP. Ayudas a profesores, alumnos y visitantes a resolver dudas sobre la UVIE, sus cursos, productos y servicios.',
+  administracion: 'Eres un asistente especializado en la carrera de Administración de Empresas de la BUAP. Ayudas a docentes y alumnos con temas de gestión, estrategia, liderazgo y emprendimiento.',
+  gastronomia: 'Eres un asistente especializado en la carrera de Gastronomía de la BUAP. Ayudas a docentes y alumnos con temas culinarios, tendencias gastronómicas, costos y gestión de alimentos.',
+  comercio: 'Eres un asistente especializado en la carrera de Comercio Internacional de la BUAP. Ayudas a docentes y alumnos con temas de exportación, logística, aduanas y mercados globales.'
+};
 
-Habla de forma natural, cercana y profesional. Responde en máximo 4-5 oraciones. NO uses markdown pesado. Ve directo al grano.`;
+const SYSTEM_PROMPT_BASE = `Habla de forma natural, cercana y profesional. Responde en máximo 4-5 oraciones. NO uses markdown pesado. Ve directo al grano.`;
 
 export default function Chatbot() {
   const [abierto, setAbierto] = useState(false);
@@ -118,10 +122,10 @@ export default function Chatbot() {
     try {
       let carrera = contexto.carrera || detectarCarrera(mensajeUsuario);
 
-      let systemPrompt = promptsCarreras.general?.contexto || SYSTEM_PROMPT_BASE;
-
-      if (carrera && promptsCarreras[carrera]) {
-        systemPrompt = `${promptsCarreras[carrera].contexto}\n\n${SYSTEM_PROMPT_BASE}`;
+      // Usamos los contextos integrados en lugar de promptsCarreras
+      let systemPrompt = CONTEXTOS_CARRERAS.general;
+      if (carrera && CONTEXTOS_CARRERAS[carrera]) {
+        systemPrompt = CONTEXTOS_CARRERAS[carrera];
       }
 
       let contextoExtra = '';
@@ -129,13 +133,13 @@ export default function Chatbot() {
       if (carrera) contextoExtra += `Pertenece a la carrera de ${carrera}. `;
 
       const interaction = await ai.models.generateContent({
-        model: 'gemini-3.8-flash',
+        model: 'gemini-3.6-flash', // Modelo actualizado
         contents: [
           {
             role: 'user',
             parts: [
               { inlineData: { mimeType: 'application/pdf', data: UVIE_BASE64 } },
-              { text: `${systemPrompt}\n\n${contextoExtra}\nMensaje del usuario: ${mensajeUsuario}` }
+              { text: `${systemPrompt}\n\n${SYSTEM_PROMPT_BASE}\n\n${contextoExtra}\nMensaje del usuario: ${mensajeUsuario}` }
             ]
           }
         ]
@@ -169,7 +173,7 @@ export default function Chatbot() {
         className="fixed bottom-6 right-6 bg-buap-azul-oscuro text-white p-4 rounded-full shadow-lg hover:bg-buap-azul-claro transition z-50"
         aria-label="Abrir chat"
       >
-        {abierto ? 'X' : 'Chat'}
+        {abierto ? 'Cerrar' : 'Chat'}
       </button>
 
       {abierto && (
@@ -177,14 +181,6 @@ export default function Chatbot() {
           <div className="bg-buap-azul-oscuro text-white p-4 relative">
             <h3 className="font-display font-bold">Asistente UVIE</h3>
             <p className="text-xs text-white/70">Cuéntame tu perfil y te ayudo</p>
-
-            <Link
-              to="/banco-prompters"
-              onClick={() => setAbierto(false)}
-              className="absolute top-4 right-4 bg-white text-buap-azul-oscuro px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-buap-azul-claro transition"
-            >
-              Banco Prompters
-            </Link>
           </div>
 
           <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-3">

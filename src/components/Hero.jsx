@@ -4,19 +4,19 @@ import fondoBuap from '../assets/login-architecture.webp';
 export default function Hero() {
   return (
     <section className="relative h-[80vh] min-h-[600px] w-full overflow-hidden">
-      {/* Imagen de fondo */}
+      {}
       <img
         src={fondoBuap}
         alt="Campus BUAP"
         className="absolute inset-0 w-full h-full object-cover"
       />
 
-      {/* Degradado azul encima */}
+      {}
       <div className="absolute inset-0 bg-gradient-to-br from-buap-azul-oscuro/95 via-buap-azul-oscuro/85 to-buap-azul-claro/60" />
 
-      {/* Contenido */}
+      {}
       <div className="relative z-10 h-full max-w-6xl mx-auto px-4 py-10 flex flex-col justify-between text-white">
-        {/* Header: logo BUAP + Facultad */}
+        {}
         <div className="flex items-center gap-4">
           <img
             src={logoBuap}
@@ -29,7 +29,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Centro: título principal */}
+        {}
         <div className="max-w-3xl">
           <p className="text-buap-azul-claro text-sm font-semibold tracking-widest uppercase mb-3">
             UVIE
@@ -46,7 +46,7 @@ export default function Hero() {
           </p>
         </div>
 
-        {/* Footer */}
+        {}
         <div className="border-t border-white/20 pt-4">
           <p className="text-xs tracking-wider text-white/70">
             DESARROLLADO POR{' '}
