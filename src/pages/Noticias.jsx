@@ -25,9 +25,6 @@ export default function Noticias() {
       } catch (err) {
         console.error(err);
         setError("No se pudieron cargar las noticias automáticas.");
-        setNoticias([
-          { titulo: "Bienvenido a la UVIE", enlace: "#", fecha: "Hoy", descripcion: "Explora los productos insignia.", imagen: "https://picsum.photos/seed/1/800/400" },
-        ]);
       } finally {
         setLoading(false);
       }
@@ -49,17 +46,23 @@ export default function Noticias() {
     return noticias.filter(n => {
       const texto = (n.titulo + ' ' + n.descripcion).toLowerCase();
       
+      // Si la noticia viene de DCyTIC, la metemos en tecnología e IA directo
+      if (n.esTech) {
+          if (categoriaActiva === 'Tecnología' || categoriaActiva === 'IA' || categoriaActiva === 'Investigación') return true;
+      }
+
       if (categoriaActiva === 'IA') {
-        return texto.includes('inteligencia artificial') || texto.includes(' ia ') || texto.includes('algoritmo') || texto.includes('robot');
+        return /inteligencia artificial|\bia\b|algoritmo|robot|machine learning|datos/.test(texto);
       }
       if (categoriaActiva === 'Tecnología') {
-        return texto.includes('tecnolog') || texto.includes('software') || texto.includes('digital') || texto.includes('datos') || texto.includes('cómputo');
+        return /tecnolog|software|digital|comput|ciberseguridad|internet|app|sistema/.test(texto);
       }
       if (categoriaActiva === 'Investigación') {
-        return texto.includes('investigación') || texto.includes('ciencia') || texto.includes('científic') || texto.includes('laboratorio');
+        return /investigaci|ciencia|cientific|laboratorio|estudio|descubrimiento/.test(texto);
       }
       if (categoriaActiva === 'BUAP') {
-        return texto.includes('buap') || texto.includes('rector') || texto.includes('estudiantes') || texto.includes('facultad');
+        // Todo lo que NO sea DCyTIC se considera BUAP general
+        return !n.esTech; 
       }
       return true;
     });
@@ -80,7 +83,7 @@ export default function Noticias() {
         
         <div className="border-b-4 border-buap-azul-oscuro pb-2 mb-4">
           <h2 className="font-display text-4xl font-bold text-buap-azul-oscuro">
-            Actualidad BUAP
+            Actualidad UVIE & BUAP
           </h2>
         </div>
 
