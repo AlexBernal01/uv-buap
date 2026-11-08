@@ -41,38 +41,45 @@ export default function Noticias() {
   ];
 
   const noticiasFiltradas = useMemo(() => {
-    if (categoriaActiva === 'Todas') return noticias;
-    
-    return noticias.filter(n => {
-      const texto = (n.titulo + ' ' + n.descripcion).toLowerCase();
-      
-      // Si la noticia viene de DCyTIC, la metemos en tecnología e IA directo
-      if (n.esTech) {
-          if (categoriaActiva === 'Tecnología' || categoriaActiva === 'IA' || categoriaActiva === 'Investigación') return true;
-      }
+    let filtradas = noticias;
+
+    if (categoriaActiva !== 'Todas') {
+      const buscar = (regex) => noticias.filter(n => {
+        const texto = (n.titulo + ' ' + n.descripcion).toLowerCase();
+        return regex.test(texto);
+      });
 
       if (categoriaActiva === 'IA') {
-        return /inteligencia artificial|\bia\b|algoritmo|robot|machine learning|datos/.test(texto);
+        filtradas = buscar(/inteligencia artificial|\bia\b|algoritmo|robot|machine learning|datos|inteligencia territorial|automatizaci/);
+      } 
+      else if (categoriaActiva === 'Tecnología') {
+        filtradas = buscar(/tecnolog|software|digital|comput|ciberseguridad|internet|app|sistema|plataforma/);
       }
-      if (categoriaActiva === 'Tecnología') {
-        return /tecnolog|software|digital|comput|ciberseguridad|internet|app|sistema/.test(texto);
+      else if (categoriaActiva === 'Investigación') {
+        filtradas = buscar(/investigaci|ciencia|cientific|laboratorio|estudio|descubrimiento/);
       }
-      if (categoriaActiva === 'Investigación') {
-        return /investigaci|ciencia|cientific|laboratorio|estudio|descubrimiento/.test(texto);
+      else if (categoriaActiva === 'BUAP') {
+        filtradas = buscar(/buap|rector|estudiante|facultad|universidad|académic/);
       }
-      if (categoriaActiva === 'BUAP') {
-        // Todo lo que NO sea DCyTIC se considera BUAP general
-        return !n.esTech; 
-      }
-      return true;
-    });
+    }
+
+    // RED DE SEGURIDAD: Si "IA" se queda vacío, mostramos una noticia de la UVIE
+    if (filtradas.length === 0 && categoriaActiva === 'IA') {
+        filtradas = [{
+            titulo: "UVIE: Explorando el futuro de la Inteligencia Artificial en la BUAP",
+            enlace: "https://uv-buap.vercel.app/",
+            fecha: "Hoy",
+            descripcion: "La Unidad de Vinculación en Inteligencia Estratégica te invita a conocer nuestros productos, cursos y el Banco de Prompters.",
+            imagen: "https://picsum.photos/seed/uvie-ia/800/400"
+        }];
+    }
+
+    return filtradas;
   }, [noticias, categoriaActiva]);
 
   if (loading) return <p className="p-8 text-center text-gray-500">Cargando noticias...</p>;
-  if (noticias.length === 0) return null;
 
   const noticiasMostradas = noticiasFiltradas.slice(0, visibles);
-  
   const noticiaHero = noticiasMostradas[0];
   const noticiasNormales = noticiasMostradas.slice(1, 4);
   const noticiasRapidas = noticiasMostradas.slice(4, 7);
@@ -80,7 +87,6 @@ export default function Noticias() {
   return (
     <section className="py-12 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4">
-        
         <div className="border-b-4 border-buap-azul-oscuro pb-2 mb-4">
           <h2 className="font-display text-4xl font-bold text-buap-azul-oscuro">
             Actualidad UVIE & BUAP
@@ -177,7 +183,6 @@ export default function Noticias() {
             </button>
           </div>
         )}
-
       </div>
     </section>
   );
