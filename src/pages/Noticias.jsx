@@ -89,7 +89,7 @@ export default function Noticias() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="border-b-4 border-buap-azul-oscuro pb-2 mb-4">
           <h2 className="font-display text-4xl font-bold text-buap-azul-oscuro">
-            Actualidad UVIE & BUAP
+            Actualidad BUAP
           </h2>
         </div>
 
