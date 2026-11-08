@@ -6,58 +6,77 @@ import { pool } from '../db.js';
 
 const router = express.Router();
 
+const procesarRSS = (xml) => {
+    const $ = cheerio.load(xml, { xmlMode: true });
+    const noticias = [];
+
+    $('item').each((i, el) => {
+        const titulo = $(el).find('title').text().trim();
+        const enlace = $(el).find('link').text().trim();
+        const fechaOriginal = $(el).find('pubDate').text().trim();
+        
+        let descSucias = $(el).find('description').text().trim();
+        
+        // Extraer imagen
+        let imagenUrl = null;
+        const matchImg = descSucias.match(/<img[^>]+src="([^">]+)"/);
+        if (matchImg) {
+            imagenUrl = matchImg[1];
+            if (imagenUrl.startsWith('/')) imagenUrl = `https://www.buap.mx${imagenUrl}`;
+        }
+
+        // Limpiar descripción
+        let descLimpia = descSucias
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&amp;/g, '&')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .substring(0, 160) + '...';
+
+        const fechaObj = new Date(fechaOriginal);
+        const fechaFormateada = !isNaN(fechaObj) 
+            ? fechaObj.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })
+            : 'Reciente';
+
+        if (titulo && enlace) {
+            noticias.push({
+                titulo,
+                enlace,
+                fecha: fechaFormateada,
+                descripcion: descLimpia,
+                imagen: imagenUrl || `https://picsum.photos/seed/${encodeURIComponent(titulo.substring(0,10))}/800/400`
+            });
+        }
+    });
+    return noticias;
+};
+
 router.get('/tech', async (req, res) => {
     try {
         const agent = new https.Agent({ rejectUnauthorized: false });
-        // Vamos directo a la página del listado actual de boletines
-        const url = 'https://boletin.buap.mx/boletines'; 
+        let noticias = [];
 
-        const response = await axios.get(url, { 
-            httpsAgent: agent, 
-            headers: { 'User-Agent': 'Mozilla/5.0' } 
-        });
-        
-        const $ = cheerio.load(response.data);
-        const noticias = [];
+        // 1. Intentar RSS General
+        try {
+            const resGeneral = await axios.get('https://www.buap.mx/rss.xml', { httpsAgent: agent, headers: { 'User-Agent': 'Mozilla/5.0' }});
+            noticias = procesarRSS(resGeneral.data);
+        } catch (e) { console.log("Error RSS General:", e.message); }
 
-        // La BUAP usa la clase 'views-row' para cada tarjeta de noticia
-        $('.views-row').each((i, el) => {
-            const tituloTag = $(el).find('h2 a, h3 a').first();
-            const titulo = tituloTag.text().trim();
-            const enlace = tituloTag.attr('href');
-            
-            if (!titulo || !enlace) return;
+        // 2. Si falla o no hay, intentar RSS DCyTIC (Tecnología)
+        if (noticias.length === 0) {
+            try {
+                const resTech = await axios.get('https://dcytic.buap.mx/rss.xml', { httpsAgent: agent, headers: { 'User-Agent': 'Mozilla/5.0' }});
+                noticias = procesarRSS(resTech.data);
+            } catch (e) { console.log("Error RSS DCyTIC:", e.message); }
+        }
 
-            // Sacar la imagen real
-            const imgTag = $(el).find('img').first();
-            let imagen = imgTag.attr('src');
-            if (imagen && imagen.startsWith('/')) {
-                imagen = `https://boletin.buap.mx${imagen}`;
-            }
-
-            // Sacar la fecha real (la BUAP la pone en esta clase)
-            const fecha = $(el).find('.date-display-single').text().trim() || 'Reciente';
-
-            // Sacar el resumen limpio (sin código HTML)
-            let desc = $(el).find('.field--name-body p, .views-field-body').text().trim();
-            if (!desc) desc = "Haz clic para leer la nota completa.";
-            desc = desc.substring(0, 150) + '...';
-
-            noticias.push({
-                titulo,
-                enlace: enlace.startsWith('/') ? `https://boletin.buap.mx${enlace}` : enlace,
-                fecha,
-                descripcion: desc,
-                imagen: imagen || `https://picsum.photos/seed/${encodeURIComponent(titulo.substring(0,10))}/800/400`
-            });
-        });
-
-        console.log(`✅ Noticias recientes extraídas: ${noticias.length}`);
+        console.log(`✅ Total noticias: ${noticias.length}`);
         res.json({ data: noticias });
 
     } catch (error) {
-        console.error('❌ Error scraping boletín:', error.message);
-        res.status(500).json({ error: 'Error al cargar noticias recientes' });
+        console.error('❌ Error crítico:', error.message);
+        res.status(500).json({ error: 'Error al cargar noticias' });
     }
 });
 
