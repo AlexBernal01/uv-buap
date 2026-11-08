@@ -9,7 +9,6 @@ const router = express.Router();
 router.get('/tech', async (req, res) => {
     try {
         const agent = new https.Agent({ rejectUnauthorized: false });
-        // URL real del listado de noticias
         const url = 'https://boletin.buap.mx/boletines'; 
 
         const response = await axios.get(url, { 
@@ -20,7 +19,6 @@ router.get('/tech', async (req, res) => {
         const $ = cheerio.load(response.data);
         const noticias = [];
 
-        // La BUAP usa la clase 'views-row' para cada noticia
         $('.views-row').each((i, el) => {
             const tituloTag = $(el).find('h2 a, h3 a').first();
             const titulo = tituloTag.text().trim();
@@ -28,17 +26,14 @@ router.get('/tech', async (req, res) => {
             
             if (!titulo || !enlace) return;
 
-            // Imagen
             const imgTag = $(el).find('img').first();
             let imagen = imgTag.attr('src');
             if (imagen && imagen.startsWith('/')) {
                 imagen = `https://boletin.buap.mx${imagen}`;
             }
 
-            // Fecha
             const fecha = $(el).find('.date-display-single').text().trim() || 'Reciente';
 
-            // Descripción (limpia)
             let desc = $(el).find('.field--name-body p, .views-field-body').text().trim();
             if (!desc) desc = "Haz clic para leer la nota completa.";
             desc = desc.substring(0, 150) + '...';
@@ -52,7 +47,7 @@ router.get('/tech', async (req, res) => {
             });
         });
 
-        console.log(`✅ Noticias reales extraídas del boletín: ${noticias.length}`);
+        console.log(`✅ Noticias reales extraídas: ${noticias.length}`);
         res.json({ data: noticias });
 
     } catch (error) {
@@ -61,7 +56,7 @@ router.get('/tech', async (req, res) => {
     }
 });
 
-// (Rutas de BD se mantienen igual)
+// Rutas de Base de Datos (se mantienen igual)
 router.get('/', async (req, res) => {
     try { const [rows] = await pool.query('SELECT * FROM noticias ORDER BY fecha DESC'); res.json(rows); } catch (error) { res.status(500).json({ error: error.message }); }
 });
