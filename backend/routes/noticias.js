@@ -8,95 +8,68 @@ const router = express.Router();
 
 router.get('/tech', async (req, res) => {
     try {
-        const boletinUrl = 'https://boletin.buap.mx/inicio'; 
+        // El RSS general de la BUAP es la fuente más estable
+        const rssUrl = 'https://www.buap.mx/rss.xml'; 
         const agent = new https.Agent({ rejectUnauthorized: false });
 
-        const response = await axios.get(boletinUrl, { 
+        console.log("🔎 Leyendo RSS oficial de la BUAP...");
+
+        const response = await axios.get(rssUrl, { 
             httpsAgent: agent,
             headers: { 'User-Agent': 'Mozilla/5.0' }
         });
         
-        const html = response.data;
-        const $ = cheerio.load(html);
-
+        const xml = response.data;
+        const $ = cheerio.load(xml, { xmlMode: true });
         const noticias = [];
-        const palabrasClave = ['inteligencia artificial', 'ia', 'tecnolog', 'software', 'digital', 'cómputo', 'datos', 'innovación', 'robot', 'algoritmo', 'ciencia'];
-        let urlsVisitadas = new Set();
 
-        const enlaces = $('a').map((i, el) => {
-            const titulo = $(el).text().trim();
-            const href = $(el).attr('href');
-            return { titulo, href };
-        }).get();
-
-        const enlacesTech = enlaces.filter(item => {
-            if (!item.href || !item.titulo || item.titulo.length < 20) return false;
-            if (!item.href.includes('/node/')) return false;
-            const textoLower = item.titulo.toLowerCase();
-            return palabrasClave.some(p => textoLower.includes(p));
-        });
-
-        const enlacesFinales = enlacesTech.slice(0, 8);
-
-        for (const item of enlacesFinales) {
-            let enlaceCompleto = item.href.startsWith('/') ? `https://boletin.buap.mx${item.href}` : item.href;
+        $('item').each((i, el) => {
+            const titulo = $(el).find('title').text().trim();
+            const enlace = $(el).find('link').text().trim();
+            const fechaOriginal = $(el).find('pubDate').text().trim();
             
-            if (urlsVisitadas.has(enlaceCompleto)) continue;
-            urlsVisitadas.add(enlaceCompleto);
+            // LIMPIEZA CRUCIAL: El RSS trae HTML sucio en la descripción
+            let descripcionSucias = $(el).find('description').text().trim();
+            let descripcionLimpia = descripcionSucias
+                .replace(/<[^>]+>/g, ' ') // Quitar etiquetas HTML
+                .replace(/\s+/g, ' ')     // Quitar espacios dobles
+                .trim()
+                .substring(0, 160) + '...';
 
-            let imagenReal = null;
-            let resumen = "Haz clic para leer la nota completa en el Boletín BUAP.";
-
-            try {
-                const notaResponse = await axios.get(enlaceCompleto, { 
-                    httpsAgent: agent, 
-                    headers: { 'User-Agent': 'Mozilla/5.0' },
-                    timeout: 5000 
-                });
-                const $nota = cheerio.load(notaResponse.data);
-
-                // Buscar la imagen principal del artículo (usualmente está dentro del campo body o content)
-                let imagenEncontrada = $nota('.field--name-body img, .node__content img, article img').first().attr('src');
-                
-                // Si no está ahí, buscar en el meta og:image
-                if (!imagenEncontrada) {
-                    imagenEncontrada = $nota('meta[property="og:image"]').attr('content');
+            // Intentar extraer imagen del HTML de la descripción
+            let imagenUrl = null;
+            const matchImg = descripcionSucias.match(/<img[^>]+src="([^">]+)"/);
+            if (matchImg) {
+                imagenUrl = matchImg[1];
+                // Si la imagen es relativa, convertirla a absoluta
+                if (imagenUrl.startsWith('/')) {
+                    imagenUrl = `https://www.buap.mx${imagenUrl}`;
                 }
-
-                // Limpiamos la URL de la imagen
-                if (imagenEncontrada) {
-                    if (imagenEncontrada.startsWith('/')) {
-                        imagenReal = `https://boletin.buap.mx${imagenEncontrada}`;
-                    } else if (!imagenEncontrada.startsWith('http')) {
-                        imagenReal = `https://boletin.buap.mx/${imagenEncontrada}`;
-                    } else {
-                        imagenReal = imagenEncontrada;
-                    }
-                }
-
-                const primerParrafo = $nota('p').filter((i, el) => $(el).text().trim().length > 50).first().text().trim();
-                if (primerParrafo) {
-                    resumen = primerParrafo.substring(0, 160) + '...';
-                }
-
-            } catch (err) {
-                console.log(`No se pudo entrar a la nota: ${enlaceCompleto}`);
             }
 
-            noticias.push({
-                titulo: item.titulo,
-                enlace: enlaceCompleto,
-                fecha: 'Reciente',
-                descripcion: resumen,
-                imagen: imagenReal || `https://picsum.photos/seed/${encodeURIComponent(item.titulo.substring(0,10))}/800/400`
-            });
-        }
+            // Formatear la fecha
+            const fechaObj = new Date(fechaOriginal);
+            const fechaFormateada = !isNaN(fechaObj) 
+                ? fechaObj.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })
+                : 'Reciente';
 
+            if (titulo && enlace) {
+                noticias.push({
+                    titulo: titulo,
+                    enlace: enlace,
+                    fecha: fechaFormateada,
+                    descripcion: descripcionLimpia || "Haz clic para leer la nota completa.",
+                    imagen: imagenUrl || `https://picsum.photos/seed/${encodeURIComponent(titulo.substring(0,10))}/800/400`
+                });
+            }
+        });
+
+        console.log(`🚀 Total de noticias extraídas del RSS: ${noticias.length}`);
         res.json({ data: noticias });
 
     } catch (error) {
-        console.error('❌ Error en scraping del Boletín:', error.message);
-        res.status(500).json({ error: 'No se pudieron cargar las noticias del Boletín' });
+        console.error('❌ Error crítico al leer el RSS:', error.message);
+        res.status(500).json({ error: 'No se pudieron cargar las noticias' });
     }
 });
 
