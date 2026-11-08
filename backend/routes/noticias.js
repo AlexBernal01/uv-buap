@@ -6,84 +6,58 @@ import { pool } from '../db.js';
 
 const router = express.Router();
 
-// Función auxiliar para procesar un XML RSS
-const procesarRSS = (xml, esDcytic = false) => {
-    const $ = cheerio.load(xml, { xmlMode: true });
-    const noticias = [];
-
-    $('item').each((i, el) => {
-        const titulo = $(el).find('title').text().trim();
-        const enlace = $(el).find('link').text().trim();
-        const fechaOriginal = $(el).find('pubDate').text().trim();
-        
-        let descripcionSucias = $(el).find('description').text().trim();
-        let descripcionLimpia = descripcionSucias
-            .replace(/<[^>]+>/g, ' ')
-            .replace(/&nbsp;/g, ' ')
-            .replace(/&amp;/g, '&')
-            .replace(/\s+/g, ' ')
-            .trim()
-            .substring(0, 160) + '...';
-
-        // Si es DCyTIC, a veces el RSS no tiene imagen, intentamos sacarla del HTML
-        let imagenUrl = null;
-        const matchImg = descripcionSucias.match(/<img[^>]+src="([^">]+)"/);
-        if (matchImg) {
-            imagenUrl = matchImg[1];
-            if (imagenUrl.startsWith('/')) {
-                imagenUrl = `https://${esDcytic ? 'dcytic.buap.mx' : 'www.buap.mx'}${imagenUrl}`;
-            }
-        }
-
-        const fechaObj = new Date(fechaOriginal);
-        const fechaFormateada = !isNaN(fechaObj) 
-            ? fechaObj.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })
-            : 'Reciente';
-
-        if (titulo && enlace) {
-            noticias.push({
-                titulo: titulo,
-                enlace: enlace,
-                fecha: fechaFormateada,
-                descripcion: descripcionLimpia || "Haz clic para leer la nota completa.",
-                imagen: imagenUrl || `https://picsum.photos/seed/${encodeURIComponent(titulo.substring(0,10))}/800/400`,
-                // Forzamos la categoría para que los filtros del frontend funcionen
-                esTech: esDcytic 
-            });
-        }
-    });
-    return noticias;
-};
-
 router.get('/tech', async (req, res) => {
     try {
         const agent = new https.Agent({ rejectUnauthorized: false });
-        let todasLasNoticias = [];
+        // Vamos directo a la página del listado actual de boletines
+        const url = 'https://boletin.buap.mx/boletines'; 
 
-        // 1. RSS General de la BUAP (Noticias institucionales)
-        try {
-            const resGeneral = await axios.get('https://www.buap.mx/rss.xml', { httpsAgent: agent, headers: { 'User-Agent': 'Mozilla/5.0' }});
-            todasLasNoticias = [...todasLasNoticias, ...procesarRSS(resGeneral.data, false)];
-        } catch (e) { console.log("Error RSS General:", e.message); }
+        const response = await axios.get(url, { 
+            httpsAgent: agent, 
+            headers: { 'User-Agent': 'Mozilla/5.0' } 
+        });
+        
+        const $ = cheerio.load(response.data);
+        const noticias = [];
 
-        // 2. RSS de DCyTIC (Noticias de Tecnología)
-        try {
-            const resTech = await axios.get('https://dcytic.buap.mx/rss.xml', { httpsAgent: agent, headers: { 'User-Agent': 'Mozilla/5.0' }});
-            todasLasNoticias = [...todasLasNoticias, ...procesarRSS(resTech.data, true)];
-        } catch (e) { console.log("Error RSS DCyTIC:", e.message); }
+        // La BUAP usa la clase 'views-row' para cada tarjeta de noticia
+        $('.views-row').each((i, el) => {
+            const tituloTag = $(el).find('h2 a, h3 a').first();
+            const titulo = tituloTag.text().trim();
+            const enlace = tituloTag.attr('href');
+            
+            if (!titulo || !enlace) return;
 
-        // Mezclar y quitar duplicados
-        const noticiasUnicas = Array.from(new Set(todasLasNoticias.map(n => n.enlace)))
-            .map(enlace => todasLasNoticias.find(n => n.enlace === enlace));
+            // Sacar la imagen real
+            const imgTag = $(el).find('img').first();
+            let imagen = imgTag.attr('src');
+            if (imagen && imagen.startsWith('/')) {
+                imagen = `https://boletin.buap.mx${imagen}`;
+            }
 
-        // Ordenar por fecha (aproximada) para que lo más nuevo salga primero
-        noticiasUnicas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+            // Sacar la fecha real (la BUAP la pone en esta clase)
+            const fecha = $(el).find('.date-display-single').text().trim() || 'Reciente';
 
-        res.json({ data: noticiasUnicas });
+            // Sacar el resumen limpio (sin código HTML)
+            let desc = $(el).find('.field--name-body p, .views-field-body').text().trim();
+            if (!desc) desc = "Haz clic para leer la nota completa.";
+            desc = desc.substring(0, 150) + '...';
+
+            noticias.push({
+                titulo,
+                enlace: enlace.startsWith('/') ? `https://boletin.buap.mx${enlace}` : enlace,
+                fecha,
+                descripcion: desc,
+                imagen: imagen || `https://picsum.photos/seed/${encodeURIComponent(titulo.substring(0,10))}/800/400`
+            });
+        });
+
+        console.log(`✅ Noticias recientes extraídas: ${noticias.length}`);
+        res.json({ data: noticias });
 
     } catch (error) {
-        console.error('❌ Error crítico:', error.message);
-        res.status(500).json({ error: 'No se pudieron cargar las noticias' });
+        console.error('❌ Error scraping boletín:', error.message);
+        res.status(500).json({ error: 'Error al cargar noticias recientes' });
     }
 });
 
