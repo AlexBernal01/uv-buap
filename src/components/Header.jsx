@@ -46,7 +46,7 @@ export default function Header() {
               </li>
               <li>
                 <Link
-                  to="/banco-prompters/desarrollo"
+                  to="/BancoP_Asistentes"
                   className="block px-4 py-2 hover:bg-gray-100 hover:text-buap-azul-claro transition"
                 >
                   Para Asistentes
