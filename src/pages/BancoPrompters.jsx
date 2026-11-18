@@ -153,7 +153,7 @@ export default function BancoPrompters() {
   return (
     <section className="py-16">
       <div className="max-w-4xl mx-auto px-4">
-        <h1 className="font-display text-3xl font-bold text-buap-azul-oscuro mb-2">Banco de Prompters</h1>
+        <h1 className="font-display text-3xl font-bold text-buap-azul-oscuro mb-2">Banco de Prompts para Profesores</h1>
         
         <div className="flex flex-wrap gap-2 mb-8">
           {categorias.map((cat) => (

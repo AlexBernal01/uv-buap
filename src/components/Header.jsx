@@ -15,13 +15,50 @@ export default function Header() {
             <div className="text-xs text-white/70">Unidad de Vinculación en Inteligencia Estratégica</div>
           </div>
         </Link>
-        <nav className="flex gap-6 text-sm">
-          <Link to="/productos" className="hover:text-buap-azul-claro transition">Productos</Link>
-          <Link to="/noticias" className="hover:text-buap-azul-claro transition">Noticias</Link>
-          <Link to="/cursos" className="hover:text-buap-azul-claro transition">Cursos</Link>
-          <Link to="/banco-prompters" className="hover:text-buap-azul-claro transition">Banco de Prompts</Link>
-          <Link to="/sobre-nosotros" className="hover:text-buap-azul-claro transition">Sobre Nosotros</Link>
+
+        <nav className="flex items-center gap-6 text-sm">
+          <Link to="/productos" className="hover:text-buap-azul-claro transition">
+            Productos
+          </Link>
+          <Link to="/noticias" className="hover:text-buap-azul-claro transition">
+            Noticias
+          </Link>
+          <Link to="/cursos" className="hover:text-buap-azul-claro transition">
+            Cursos
+          </Link>
+
           
+          <div className="relative group py-2">
+            <Link
+              className="hover:text-buap-azul-claro transition inline-flex items-center gap-1"
+            >
+              Banco de Prompts
+            </Link>
+
+            <ul className="hidden group-hover:block absolute left-0 top-full w-48 bg-white text-gray-800 shadow-lg rounded-md py-2 z-50 border border-gray-100">
+              <li>
+                <Link
+                  to="/banco-prompters"
+                  className="block px-4 py-2 hover:bg-gray-100 hover:text-buap-azul-claro transition"
+                >
+                  Para Profesores
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/banco-prompters/desarrollo"
+                  className="block px-4 py-2 hover:bg-gray-100 hover:text-buap-azul-claro transition"
+                >
+                  Para Asistentes
+                </Link>
+              </li>
+
+            </ul>
+          </div>
+
+          <Link to="/sobre-nosotros" className="hover:text-buap-azul-claro transition">
+            Sobre Nosotros
+          </Link>
         </nav>
       </div>
     </header>
