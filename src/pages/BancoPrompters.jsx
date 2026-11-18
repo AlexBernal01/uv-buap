@@ -199,7 +199,7 @@ export default function BancoPrompters() {
 
                   {}
                   <div className="flex items-center gap-3 bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
-                    <span className="text-xs text-gray-400 font-semibold mr-1">Abrir con Prompter en:</span>
+                    <span className="text-xs text-gray-400 font-semibold mr-1">Abrir con Prompt en:</span>
                     <div className="flex gap-1.5">
                       {iasConPrompt.map(ia => (
                         <button
@@ -213,7 +213,7 @@ export default function BancoPrompters() {
                       ))}
                     </div>
                     <div className="h-5 w-px bg-gray-300 mx-1"></div>
-                      <span className="text-xs text-gray-400 font-semibold mr-1">Abrir sin Prompter en:</span>
+                      <span className="text-xs text-gray-400 font-semibold mr-1">Abrir sin Prompt en:</span>
                     <div className="flex gap-1.5">
                      
                       {iasSinPrompt.map(ia => (
