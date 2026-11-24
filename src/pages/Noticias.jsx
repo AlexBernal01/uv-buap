@@ -8,8 +8,6 @@ export default function Noticias() {
   useEffect(() => {
     const cargarNoticias = async () => {
       try {
-        // OJO AQUÍ: Asegúrate de que no se duplique el /api. 
-        // Si en tu variable de entorno VITE_API_URL ya tienes el /api, quítalo de aquí abajo.
         const API_URL = import.meta.env.VITE_API_URL || 'https://uv-buap.onrender.com';
         const respuesta = await fetch(`${API_URL}/noticias/tech`);
         
@@ -30,7 +28,7 @@ export default function Noticias() {
   if (cargando) {
     return (
       <div className="text-center py-24 text-buap-azul-oscuro font-bold text-lg">
-        Cargando noticias de Inteligencia Artificial...
+        Cargando noticias...
       </div>
     );
   }
@@ -46,7 +44,7 @@ export default function Noticias() {
   if (noticias.length === 0) {
     return (
       <div className="text-center py-24 text-gray-500">
-        No hay noticias de Inteligencia Artificial en este momento.
+        No hay noticias por el momento.
       </div>
     );
   }
@@ -60,29 +58,29 @@ export default function Noticias() {
       <div className="max-w-6xl mx-auto px-4">
         
         <h1 className="font-display text-3xl font-bold text-buap-azul-oscuro mb-8 border-b-2 border-buap-azul-oscuro pb-2">
-          Actualidad BUAP
+          Actualidad BUAP - Inteligencia Artificial
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           
           <div className="lg:col-span-2">
-            <article className="group cursor-pointer flex flex-col md:flex-row h-full bg-gray-50 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
-              <div className="md:w-1/2 h-64 md:h-auto relative overflow-hidden">
+            <article className="group cursor-pointer flex flex-col sm:flex-row h-full bg-gray-50 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+              <div className="sm:w-1/2 h-64 sm:h-auto relative overflow-hidden bg-gray-200">
                 <img 
                   src={noticiaPrincipal.imagen} 
                   alt={noticiaPrincipal.titulo} 
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                 />
               </div>
-              <div className="md:w-1/2 p-6 flex flex-col justify-center">
+              <div className="sm:w-1/2 p-6 flex flex-col justify-center">
                 <span className="text-xs text-blue-500 font-semibold uppercase tracking-wider mb-3 block">
                   {noticiaPrincipal.fecha}
                 </span>
-                <h2 className="text-3xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-buap-azul-claro transition line-clamp-3">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 leading-tight group-hover:text-buap-azul-claro transition line-clamp-3">
                   {noticiaPrincipal.titulo}
                 </h2>
-                <p className="text-gray-600 mb-6 line-clamp-4">
-                  {noticiaPrincipal.descripcion}
+                <p className="text-gray-600 mb-6 line-clamp-4 text-sm sm:text-base">
+                  {noticiaPrincipal.descripcion || 'Lee la nota completa para conocer más detalles sobre este tema de inteligencia artificial.'}
                 </p>
                 <a 
                   href={noticiaPrincipal.enlace} 
@@ -96,14 +94,14 @@ export default function Noticias() {
             </article>
           </div>
 
-          <div className="lg:col-span-1 border border-gray-200 rounded-xl p-5 bg-white">
+          <div className="lg:col-span-1 border border-gray-200 rounded-xl p-5 bg-white shadow-sm">
             <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">
               Noticias Rápidas
             </h3>
             <div className="flex flex-col gap-4">
               {noticiasRapidas.map((noticia, idx) => (
                 <a key={idx} href={noticia.enlace} target="_blank" rel="noopener noreferrer" className="flex gap-3 group">
-                  <div className="w-16 h-16 shrink-0 rounded overflow-hidden">
+                  <div className="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-200">
                     <img src={noticia.imagen} alt={noticia.titulo} className="w-full h-full object-cover" />
                   </div>
                   <div>
@@ -121,7 +119,7 @@ export default function Noticias() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {noticiasSecundarias.map((noticia, idx) => (
             <article key={idx} className="group cursor-pointer bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-48 overflow-hidden bg-gray-200">
                 <img 
                   src={noticia.imagen} 
                   alt={noticia.titulo} 
@@ -136,7 +134,7 @@ export default function Noticias() {
                   {noticia.titulo}
                 </h2>
                 <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                  {noticia.descripcion}
+                  {noticia.descripcion || 'Lee la nota completa para conocer más detalles.'}
                 </p>
                 <a 
                   href={noticia.enlace} 
@@ -150,14 +148,6 @@ export default function Noticias() {
             </article>
           ))}
         </div>
-
-        {noticias.length > 8 && (
-          <div className="flex justify-center mt-8">
-            <button className="bg-buap-azul-oscuro text-white font-bold px-8 py-3 rounded-full hover:bg-buap-azul-claro transition">
-              Cargar más noticias ↓
-            </button>
-          </div>
-        )}
 
       </div>
     </section>
