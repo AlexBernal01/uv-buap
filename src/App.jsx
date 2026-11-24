@@ -10,6 +10,7 @@ import Cursos from './pages/Cursos';
 import BancoPrompters from './pages/BancoPrompters';
 import Chatbot from './components/Chatbot';
 import CursoDetalle from './pages/CursoDetalle';
+import BancoAsistentes from './pages/BancoAsistentes';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/cursos" element={<Cursos />} />
           <Route path="/cursos/:id" element={<CursoDetalle />} />
           <Route path="/banco-prompters" element={<BancoPrompters />} />
+          <Route path="banco-asistentes" element={<BancoAsistentes/>} />
           <Route path="/dev" element={<DevZone />} />
         </Route>
       </Routes>

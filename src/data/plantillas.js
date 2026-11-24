@@ -314,5 +314,274 @@ Después, diseña una actividad en la que los estudiantes resuelvan problemas re
 Define el propósito del producto y explica cómo se relaciona con los contenidos del curso. Organiza el trabajo desde la planificación hasta la elaboración y revisión del resultado. Sugiere materiales o herramientas adecuados para realizar la actividad.
 
 Después, diseña una actividad en la que los estudiantes creen su propio recurso o producto relacionado con [TEMA]. Indica qué deberán elaborar, qué características debe cumplir y qué pasos seguirán para diseñarlo y mejorarlo. Especifica qué entregarán al finalizar y establece criterios para evaluar la relación con el tema, la utilidad, la calidad y la presentación del producto.`
+  },
+
+    // ============================================================
+  // PLANTILLAS PARA ASISTENTES / SECRETARÍA
+  // ============================================================
+
+  {
+    id: 'asis-archivo-organizar',
+    area: 'asistentes',
+    categoria: 'Gestión de archivos',
+    titulo: 'Organización de expedientes y archivo de gestión',
+    texto: `Actúa como [ROL] y diseña un esquema de organización para el expediente de [TIPO DE EXPEDIENTE] del área de [ÁREA O DEPENDENCIA] correspondiente al periodo [PERIODO].
+
+Define los criterios de ordenación (cronológico, alfabético, numérico o por asunto) que mejor se adapten al tipo de documentos. Propón una estructura de carpetas, series y subseries, así como la foliación, los separadores y los rótulos para las cajas de archivo. Entrega una tabla lista para usar con los campos: número de folio, tipo documental, remitente, fecha, asunto y observaciones.`
+  },
+  {
+    id: 'asis-archivo-clasificar',
+    area: 'asistentes',
+    categoria: 'Gestión de archivos',
+    titulo: 'Clasificación documental por serie y vigencia',
+    texto: `Actúa como [ROL] y clasifica los siguientes documentos del área de [ÁREA]: [LISTA O DESCRIPCIÓN DE DOCUMENTOS].
+
+Identifica la serie y subserie documental de cada uno (oficios, actas, informes, convenios, correspondencia, expedientes de personal, entre otros). Para cada documento indica el tiempo de retención sugerido, el destino final (archivo de trámite, concentración o histórico) y la dependencia responsable de su resguardo. Entrega la información en una tabla lista para incorporar al sistema de control del área.`
+  },
+  {
+    id: 'asis-archivo-digital',
+    area: 'asistentes',
+    categoria: 'Gestión de archivos',
+    titulo: 'Digitalización y control de archivos electrónicos',
+    texto: `Actúa como [ROL] y define el procedimiento para digitalizar y controlar el archivo electrónico de [TIPO DE DOCUMENTOS] del área de [ÁREA].
+
+Establece los criterios de digitalización (resolución, formato, nombre de archivo, metadatos), la estructura de carpetas digitales y las reglas de respaldo y seguridad. Entrega un formato de control listo para usar con los campos: folio digital, nombre del archivo, fecha de digitalización, responsable, ubicación en el servidor y observaciones.`
+  },
+  {
+    id: 'asis-archivo-prestamo',
+    area: 'asistentes',
+    categoria: 'Gestión de archivos',
+    titulo: 'Control de préstamo y devolución de expedientes',
+    texto: `Actúa como [ROL] y redacta el procedimiento para el préstamo y devolución de expedientes del archivo de [ÁREA].
+
+Define los requisitos para solicitar un expediente, los plazos de préstamo, las responsabilidades del solicitante y del personal de archivo, y las acciones a seguir en caso de extravío o deterioro. Entrega un formato de control listo para usar con los campos: número de expediente, solicitante, área, fecha de préstamo, fecha de devolución, estado del expediente y firma.`
+  },
+  {
+    id: 'asis-archivo-inventario',
+    area: 'asistentes',
+    categoria: 'Gestión de archivos',
+    titulo: 'Inventario de archivo de trámite',
+    texto: `Actúa como [ROL] y elabora el inventario del archivo de trámite del área de [ÁREA] para el periodo [PERIODO].
+
+Define los campos del inventario (número de registro, serie documental, subserie, tipo documental, fechas extremas, número de fojas, ubicación física y observaciones) y explica brevemente cómo levantar el recorrido físico del archivo. Entrega una plantilla de inventario lista para capturar.`
+  },
+  {
+    id: 'asis-normativa-localizar',
+    area: 'asistentes',
+    categoria: 'Búsqueda de normativas',
+    titulo: 'Localización de normativa aplicable a un trámite',
+    texto: `Actúa como [ROL] e identifica la normativa universitaria aplicable para el siguiente trámite o procedimiento: [DESCRIPCIÓN DEL TRÁMITE] del área de [ÁREA].
+
+Revisa el marco normativo institucional (reglamentos, lineamientos, manuales de procedimientos, acuerdos) y entrega: nombre exacto del documento, artículo o apartado específico que regula el trámite, dependencia responsable de su aplicación y vigencia o última actualización si está disponible. Si no existe una norma específica, indica qué normativa general aplicaría de forma supletoria y justifica por qué.`
+  },
+  {
+    id: 'asis-normativa-resumir',
+    area: 'asistentes',
+    categoria: 'Búsqueda de normativas',
+    titulo: 'Resumen ejecutivo de un reglamento o lineamiento',
+    texto: `Actúa como [ROL] y elabora un resumen ejecutivo del siguiente reglamento o lineamiento: [NOMBRE O TEXTO DEL DOCUMENTO], aplicable al área de [ÁREA].
+
+Organiza la información en: objeto y ámbito de aplicación, autoridades competentes, obligaciones principales del área administrativa, plazos y procedimientos clave, y sanciones o consecuencias por incumplimiento cuando corresponda. Usa viñetas, lenguaje claro y evita tecnicismos innecesarios. Entrega el resumen listo para consulta rápida del personal del área.`
+  },
+  {
+    id: 'asis-normativa-comparar',
+    area: 'asistentes',
+    categoria: 'Búsqueda de normativas',
+    titulo: 'Comparación de normativas o versiones',
+    texto: `Actúa como [ROL] y elabora una tabla comparativa entre [NORMA O VERSIÓN A] y [NORMA O VERSIÓN B] relacionadas con [TEMA O TRÁMITE] del área de [ÁREA].
+
+Identifica los criterios de comparación pertinentes (objeto, ámbito de aplicación, autoridades, obligaciones, plazos, procedimientos y sanciones, entre otros) y organiza la información en una tabla que permita ver semejanzas, diferencias y cambios relevantes. Cierra con una conclusión breve sobre cuál es la norma vigente aplicable y qué implicaciones tiene para el área.`
+  },
+  {
+    id: 'asis-normativa-checklist',
+    area: 'asistentes',
+    categoria: 'Búsqueda de normativas',
+    titulo: 'Lista de verificación de cumplimiento normativo',
+    texto: `Actúa como [ROL] y elabora una lista de verificación (checklist) para comprobar el cumplimiento de [NORMA O LINEAMIENTO] en el área de [ÁREA].
+
+Identifica los requisitos, plazos y evidencias documentales que exige la norma. Entrega una tabla lista para usar con los campos: requisito, artículo o apartado de referencia, evidencia requerida, responsable, fecha límite y estado de cumplimiento (cumplido, pendiente o no aplica).`
+  },
+  {
+    id: 'asis-corres-oficio-respuesta',
+    area: 'asistentes',
+    categoria: 'Creación de correspondencia',
+    titulo: 'Oficio de respuesta a profesorado, alumnado o personal administrativo',
+    texto: `Actúa como [ROL] y redacta un oficio formal de respuesta dirigido a [NOMBRE Y CARGO DEL DESTINATARIO], quien pertenece al sector [PROFESORADO / ALUMNADO / PERSONAL ADMINISTRATIVO] de la BUAP, adscrito a [FACULTAD O DEPENDENCIA], con motivo de [DESCRIPCIÓN DEL ASUNTO].
+
+Incluye: lugar y fecha, número de oficio, referencia al documento recibido (número y fecha si aplica), cuerpo con la respuesta o información solicitada, y cierre protocolar con despedida y firma. Tono formal, claro y conciso, máximo una cuartilla. Entrega el oficio listo para firma.`
+  },
+  {
+    id: 'asis-corres-circular',
+    area: 'asistentes',
+    categoria: 'Creación de correspondencia',
+    titulo: 'Circular interna para profesorado, alumnado o personal administrativo',
+    texto: `Actúa como [ROL] y redacta una circular interna dirigida a [PROFESORADO / ALUMNADO / PERSONAL ADMINISTRATIVO] de la [FACULTAD O DEPENDENCIA] de la BUAP, sobre el siguiente asunto: [DESCRIPCIÓN DEL ASUNTO].
+
+Incluye: lugar y fecha, clave de identificación (Circular: [SIGLAS]/[NÚMERO]/[AÑO]), destinatarios en forma colectiva, cuerpo con instrucciones claras en tercera persona, y cierre con "ATENTAMENTE" más nombre y cargo del emisor. Si aplica, agrega fechas límite, documentación requerida o indicaciones de seguimiento. Entrega la circular lista para envío.`
+  },
+  {
+    id: 'asis-corres-memo',
+    area: 'asistentes',
+    categoria: 'Creación de correspondencia',
+    titulo: 'Memorándum de seguimiento a profesorado o personal administrativo',
+    texto: `Actúa como [ROL] y redacta un memorándum interno dirigido a [NOMBRE Y CARGO DEL DESTINATARIO], del sector [PROFESORADO / PERSONAL ADMINISTRATIVO] de la BUAP, adscrito a [FACULTAD O DEPENDENCIA], para dar seguimiento al asunto: [DESCRIPCIÓN DEL ASUNTO PENDIENTE].
+
+Incluye: fecha, apartados "Para", "De" y "Asunto", referencia al compromiso o acuerdo previo, estado actual, acción solicitada y fecha límite de respuesta. Tono institucional, directo y enfocado en el cumplimiento. Entrega el memorándum listo para envío.`
+  },
+  {
+    id: 'asis-corres-oficio-solicitud',
+    area: 'asistentes',
+    categoria: 'Creación de correspondencia',
+    titulo: 'Oficio de solicitud a profesorado, alumnado o personal administrativo',
+    texto: `Actúa como [ROL] y redacta un oficio formal de solicitud dirigido a [NOMBRE Y CARGO DEL DESTINATARIO], del sector [PROFESORADO / ALUMNADO / PERSONAL ADMINISTRATIVO] de la BUAP, adscrito a [FACULTAD O DEPENDENCIA], para solicitar [DESCRIPCIÓN DE LO SOLICITADO].
+
+Incluye: lugar y fecha, número de oficio, destinatario, exposición breve del motivo, descripción clara de lo solicitado, plazo o fecha en que se requiere la respuesta y cierre protocolar con firma. Tono formal, respetuoso y conciso. Entrega el oficio listo para firma.`
+  },
+  {
+    id: 'asis-corres-acuse',
+    area: 'asistentes',
+    categoria: 'Creación de correspondencia',
+    titulo: 'Acuse de recibo y turno de documento',
+    texto: `Actúa como [ROL] y redacta el acuse de recibo y turno para el documento [NÚMERO O DESCRIPCIÓN DEL DOCUMENTO] recibido en el área de [ÁREA], proveniente de [NOMBRE Y CARGO DEL REMITENTE], del sector [PROFESORADO / ALUMNADO / PERSONAL ADMINISTRATIVO] de la BUAP.
+
+Incluye: fecha de recepción, número de oficio o documento recibido, remitente y sector, asunto, área o persona a la que se turna, instrucción de atención y plazo para dar respuesta. Formato breve y claro, listo para registrarse en el control de correspondencia.`
+  },
+  {
+    id: 'asis-corres-control',
+    area: 'asistentes',
+    categoria: 'Creación de correspondencia',
+    titulo: 'Control y seguimiento de correspondencia de la comunidad BUAP',
+    texto: `Actúa como [ROL] y diseña el formato de control y seguimiento para la correspondencia que ingresa y egresa del área de [ÁREA] durante el periodo [PERIODO], considerando como remitentes o destinatarios a profesorado, alumnado y personal administrativo de la BUAP.
+
+Define los campos (número de registro, fecha de recepción o envío, tipo de documento, nombre y sector del remitente o destinatario, facultad o dependencia, asunto, área responsable, fecha de turno, fecha límite de respuesta, estado y observaciones). Entrega la plantilla lista para capturar y una breve indicación de cómo identificar los documentos con plazo vencido.`
+  },
+
+  // ============================================================
+  // APOYO AL PROFESOR (ASISTENTE DE PROFESOR)
+  // ============================================================
+
+  {
+    id: 'asis-prof-listado',
+    area: 'asistentes',
+    categoria: 'Apoyo al profesor',
+    titulo: 'Listado y control de asistencia del grupo',
+    texto: `Actúa como [ROL] y diseña el formato de control de asistencia del grupo [CLAVE DEL GRUPO] de la materia [MATERIA] de la carrera [CARRERA], nivel [NIVEL], periodo [PERIODO].
+
+Incluye los campos: número de lista, nombre completo, matrícula, firma por sesión, fecha de cada sesión, porcentaje de asistencia y observaciones. Agrega la fórmula para calcular el porcentaje y una columna de alerta para estudiantes con inasistencia que requieran seguimiento. Entrega la plantilla lista para capturar.`
+  },
+  {
+    id: 'asis-prof-calificaciones',
+    area: 'asistentes',
+    categoria: 'Apoyo al profesor',
+    titulo: 'Captura y concentrado de calificaciones',
+    texto: `Actúa como [ROL] y diseña el formato de concentrado de calificaciones de la materia [MATERIA] del grupo [CLAVE DEL GRUPO], carrera [CARRERA], nivel [NIVEL], periodo [PERIODO].
+
+Incluye los campos: número de lista, nombre, matrícula, calificaciones parciales, ponderaciones, calificación final y observaciones. Indica cómo aplicar las ponderaciones y cómo marcar los faltantes o errores antes de la entrega. Entrega la plantilla lista para capturar y el concentrado final.`
+  },
+  {
+    id: 'asis-prof-materiales',
+    area: 'asistentes',
+    categoria: 'Apoyo al profesor',
+    titulo: 'Organización y control de materiales didácticos',
+    texto: `Actúa como [ROL] y diseña el esquema de organización y control de los materiales didácticos de la materia [MATERIA] del grupo [CLAVE DEL GRUPO], carrera [CARRERA], nivel [NIVEL].
+
+Define la estructura de carpetas (por unidad, por sesión o por tipo de recurso), los criterios de nomenclatura de archivos y entrega un formato de control con los campos: nombre del recurso, tipo, unidad o sesión, fecha de elaboración, responsable y estado (en elaboración, revisado o listo para aplicación). Incluye una regla breve de versionado y respaldo.`
+  },
+  {
+    id: 'asis-prof-planeacion',
+    area: 'asistentes',
+    categoria: 'Apoyo al profesor',
+    titulo: 'Apoyo en la elaboración de planeación didáctica',
+    texto: `Actúa como [ROL] y elabora una propuesta de planeación didáctica para la materia [MATERIA] del grupo [CLAVE DEL GRUPO], carrera [CARRERA], nivel [NIVEL], periodo [PERIODO].
+
+Incluye: datos generales, competencias, contenidos por unidad, estrategias de enseñanza y aprendizaje, recursos, criterios de evaluación y bibliografía. Distribuye las sesiones del periodo y verifica que la planeación sea congruente con el programa oficial de la materia. Entrega la planeación lista para revisión del profesor.`
+  },
+  {
+    id: 'asis-prof-examenes',
+    area: 'asistentes',
+    categoria: 'Apoyo al profesor',
+    titulo: 'Apoyo en la aplicación y control de exámenes',
+    texto: `Actúa como [ROL] y redacta el procedimiento para la aplicación y control de exámenes de la materia [MATERIA] del grupo [CLAVE DEL GRUPO], carrera [CARRERA], nivel [NIVEL].
+
+Define las etapas (recepción del examen, reproducción, resguardo, aplicación, recolección, registro de incidencias y entrega al profesor) y entrega un formato de control con los campos: nombre del examen, fecha, grupo, número de ejemplares, responsable de aplicación, incidencias y firma de entrega.`
+  },
+  {
+    id: 'asis-prof-tutorias',
+    area: 'asistentes',
+    categoria: 'Apoyo al profesor',
+    titulo: 'Registro y seguimiento de tutorías académicas',
+    texto: `Actúa como [ROL] y diseña el formato para registrar y dar seguimiento a las tutorías académicas que el profesor [NOMBRE DEL PROFESOR] brinda a estudiantes de la carrera [CARRERA], nivel [NIVEL], periodo [PERIODO].
+
+Incluye los campos: fecha, nombre y matrícula del estudiante, motivo de la tutoría, temas abordados, acuerdos o recomendaciones, fecha de seguimiento y firma. Entrega la plantilla lista para capturar y una columna de alerta para los casos que requieran atención adicional.`
+  },
+  {
+    id: 'asis-prof-constancias',
+    area: 'asistentes',
+    categoria: 'Apoyo al profesor',
+    titulo: 'Elaboración de constancias y documentos académicos',
+    texto: `Actúa como [ROL] y redacta una constancia académica para el estudiante [NOMBRE Y MATRÍCULA], de la carrera [CARRERA], nivel [NIVEL], quien participó en [ACTIVIDAD O CURSO] organizado por [ÁREA O DEPENDENCIA] durante el periodo [PERIODO].
+
+Incluye: lugar y fecha, nombre completo, matrícula, carrera, nombre de la actividad, duración, periodo, nombre y cargo de quien expide, y espacio para firma y sello. Formato formal, claro y breve. Entrega la constancia lista para firma.`
+  },
+
+  // ============================================================
+  // APOYO ADMINISTRATIVO
+  // ============================================================
+
+  {
+    id: 'asis-admin-agenda',
+    area: 'asistentes',
+    categoria: 'Apoyo administrativo',
+    titulo: 'Gestión de agenda y programación de reuniones',
+    texto: `Actúa como [ROL] y diseña el esquema para gestionar la agenda y programar reuniones del área de [ÁREA O DEPENDENCIA] durante el periodo [PERIODO].
+
+Define los criterios para priorizar reuniones y actividades, los campos del formato de agenda (fecha, hora, asunto, participantes, lugar o modalidad, documentos previos y acuerdos) y las reglas para confirmar, reprogramar o cancelar reuniones. Entrega la plantilla de agenda y un modelo breve de convocatoria listos para usar.`
+  },
+  {
+    id: 'asis-admin-tramites',
+    area: 'asistentes',
+    categoria: 'Apoyo administrativo',
+    titulo: 'Orientación y seguimiento de trámites administrativos',
+    texto: `Actúa como [ROL] y elabora la guía de orientación para el trámite de [NOMBRE DEL TRÁMITE] que se realiza en el área de [ÁREA O DEPENDENCIA] de la BUAP.
+
+Incluye: objetivo del trámite, requisitos y documentos necesarios, pasos del procedimiento, plazos, área responsable, costo (si aplica) y recomendaciones para evitar errores comunes. Entrega la guía lista para entregar al solicitante y un formato breve de control de seguimiento con: folio, solicitante, sector, fecha de recepción, estado y fecha de conclusión.`
+  },
+  {
+    id: 'asis-admin-inventario',
+    area: 'asistentes',
+    categoria: 'Apoyo administrativo',
+    titulo: 'Inventario y control de bienes del área',
+    texto: `Actúa como [ROL] y diseña el formato para el inventario y control de bienes del área de [ÁREA O DEPENDENCIA] durante el periodo [PERIODO].
+
+Incluye los campos: número de inventario, descripción del bien, marca, modelo, número de serie, ubicación, responsable, estado de conservación y observaciones. Agrega una sección para registrar altas, bajas y traslados. Entrega la plantilla lista para capturar.`
+  },
+  {
+    id: 'asis-admin-presupuesto',
+    area: 'asistentes',
+    categoria: 'Apoyo administrativo',
+    titulo: 'Control de gastos y comprobaciones del área',
+    texto: `Actúa como [ROL] y diseña el formato para el control de gastos y comprobaciones del área de [ÁREA O DEPENDENCIA] durante el periodo [PERIODO].
+
+Incluye los campos: fecha, concepto del gasto, monto, partida presupuestal, proveedor, número de factura o comprobante, fecha de comprobación y observaciones. Agrega una columna de estado (comprobado o pendiente) y una breve indicación para verificar que los comprobantes cumplan con los requisitos fiscales. Entrega la plantilla lista para capturar.`
+  },
+  {
+    id: 'asis-admin-reportes',
+    area: 'asistentes',
+    categoria: 'Apoyo administrativo',
+    titulo: 'Elaboración de reportes periódicos del área',
+    texto: `Actúa como [ROL] y elabora la estructura del reporte periódico de actividades del área de [ÁREA O DEPENDENCIA] correspondiente al periodo [PERIODO].
+
+Define los apartados (datos generales, actividades realizadas, indicadores o resultados, incidencias, pendientes y conclusiones). Entrega una plantilla lista para capturar y un ejemplo breve de redacción de conclusiones y recomendaciones.`
+  },
+  {
+    id: 'asis-admin-eventos',
+    area: 'asistentes',
+    categoria: 'Apoyo administrativo',
+    titulo: 'Organización logística de eventos académicos',
+    texto: `Actúa como [ROL] y elabora el plan logístico para la organización del evento académico [NOMBRE DEL EVENTO] que se realizará en [LUGAR] el [FECHA], organizado por el área de [ÁREA O DEPENDENCIA].
+
+Incluye: objetivos del evento, programa de actividades, lista de invitados y ponentes, requerimientos de espacio, equipo y materiales, responsables de cada tarea, cronograma de preparación y presupuesto estimado. Entrega el plan listo para ejecución y un cronograma de seguimiento de pendientes.`
   }
+
+  
 ];
