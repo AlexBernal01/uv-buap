@@ -6,7 +6,7 @@ import { pool } from '../db.js';
 
 const router = express.Router();
 
-const procesarRSS = (xml, esAura = false) => {
+const procesarRSS = (xml) => {
     const $ = cheerio.load(xml, { xmlMode: true });
     const noticias = [];
 
@@ -23,7 +23,6 @@ const procesarRSS = (xml, esAura = false) => {
             if (imagenUrl.startsWith('/')) imagenUrl = `https://www.buap.mx${imagenUrl}`;
         }
 
-        // Limpieza profunda de la descripción para que no salga "Title: ... location: ..."
         let descLimpia = descSucias
             .replace(/<[^>]+>/g, ' ')
             .replace(/&nbsp;/g, ' ')
@@ -32,6 +31,7 @@ const procesarRSS = (xml, esAura = false) => {
             .replace(/Description:/gi, '')
             .replace(/location\s*=\s*.*/gi, '')
             .replace(/window\.open.*/gi, '')
+            .replace(/https?:\/\/[^\s]+/g, '')
             .replace(/\s+/g, ' ')
             .trim();
             
@@ -42,17 +42,18 @@ const procesarRSS = (xml, esAura = false) => {
             ? fechaObj.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })
             : 'Reciente';
 
-        // Filtro estricto de IA
         const t = `${titulo} ${descLimpia}`.toLowerCase();
+        
+        // Filtro: Tiene que ser de IA, DCyTIC, AURA o LNS. Descartar PDFs y convocatorias.
         const basura = t.includes('.pdf') || t.includes('convocatoria') || t.includes('inscripciones') || t.includes('puebla, cuna');
-        const tieneIA = esAura || ['inteligencia artificial', 'ia ', ' ia', 'ia,', 'ia.', 'aura', 'algoritmo', 'algorítmic', 'lns', 'supercómputo', 'machine learning', 'deep learning', 'chatbot'].some(p => t.includes(p));
+        const esValido = ['inteligencia artificial', 'ia ', ' ia', 'ia,', 'ia.', 'aura', 'algoritmo', 'algorítmic', 'lns', 'supercómputo', 'machine learning', 'deep learning', 'chatbot', 'dcytic'].some(p => t.includes(p));
 
-        if (titulo && enlace && tieneIA && !basura) {
+        if (titulo && enlace && esValido && !basura) {
             noticias.push({
                 titulo,
                 enlace,
                 fecha: fechaFormateada,
-                descripcion: descLimpia || 'Sin descripción disponible.',
+                descripcion: descLimpia || 'Da clic para leer la nota completa.',
                 imagen: imagenUrl || `https://picsum.photos/seed/${encodeURIComponent(titulo.substring(0,10))}/800/400`
             });
         }
@@ -67,7 +68,6 @@ const scrapeAura = async () => {
         const { data } = await axios.get('https://www.aurabuap.mx/blog', { httpsAgent: agent, headers: { 'User-Agent': 'Mozilla/5.0' }});
         const $ = cheerio.load(data);
         
-        // Selector específico para las tarjetas de blog de Wix
         $('.wix-blog-post').each((i, el) => {
             const titulo = $(el).find('.post-title').text().trim();
             let enlace = $(el).find('a').attr('href');
@@ -82,7 +82,7 @@ const scrapeAura = async () => {
                     titulo,
                     enlace,
                     fecha: 'Reciente',
-                    descripcion,
+                    descripcion: descripcion || 'Da clic para leer la nota completa.',
                     imagen: `https://picsum.photos/seed/${encodeURIComponent(titulo.substring(0,10))}/800/400`
                 });
             }
@@ -93,7 +93,6 @@ const scrapeAura = async () => {
     return noticias;
 };
 
-// Noticias reales del LNS extraídas de su sitio para garantizar contenido
 const noticiasLNSReales = [
     {
         titulo: "LNS de la BUAP se consolida como un centro para el desarrollo de la ciencia",
@@ -127,17 +126,13 @@ const noticiasLNSReales = [
 
 router.get('/tech', async (req, res) => {
     try {
-        let noticias = [];
-
         const [auraNoticias, resTech] = await Promise.all([
             scrapeAura(),
             axios.get('https://dcytic.buap.mx/rss.xml', { httpsAgent: new https.Agent({ rejectUnauthorized: false }), headers: { 'User-Agent': 'Mozilla/5.0' }})
                 .then(r => procesarRSS(r.data)).catch(e => [])
         ]);
 
-        noticias = [...auraNoticias, ...noticiasLNSReales, ...resTech];
-        
-        // Evitar duplicados
+        const noticias = [...auraNoticias, ...noticiasLNSReales, ...resTech];
         let noticiasUnicas = Array.from(new Map(noticias.map(n => [n.enlace, n])).values());
 
         res.json({ data: noticiasUnicas });
@@ -148,7 +143,6 @@ router.get('/tech', async (req, res) => {
     }
 });
 
-// Rutas de Base de Datos
 router.get('/', async (req, res) => {
     try { const [rows] = await pool.query('SELECT * FROM noticias ORDER BY fecha DESC'); res.json(rows); } catch (error) { res.status(500).json({ error: error.message }); }
 });

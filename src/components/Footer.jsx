@@ -43,7 +43,7 @@ export default function Footer() {
 
       <div className="border-t border-white/10">
         <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-white/50 text-center">
-          © {new Date().getFullYear()} UVIE - BUAP. Todos los derechos reservados.
+          © {new Date().getFullYear()} UVIE - Facultad de Administracion - BUAP. Todos los derechos reservados.
         </div>
       </div>
     </footer>
