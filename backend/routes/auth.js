@@ -1,11 +1,25 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { body, validationResult } from 'express-validator'; // <-- NUEVO
 import { pool } from '../db.js';
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
+// Validaciones para el registro
+const validarRegistro = [
+    body('email').isEmail().withMessage('Email inválido'),
+    body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
+    body('nombre').notEmpty().withMessage('El nombre es obligatorio')
+];
+
+router.post('/register', validarRegistro, async (req, res) => {
+    // Revisar si hay errores de validación
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     try {
         const { email, password, nombre } = req.body;
         const hash = await bcrypt.hash(password, 10);
@@ -15,11 +29,26 @@ router.post('/register', async (req, res) => {
         );
         res.status(201).json({ id: result.insertId, email, nombre });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        // Si el email ya existe (código de error de MySQL)
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ error: 'Este correo ya está registrado' });
+        }
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
-router.post('/login', async (req, res) => {
+// Validaciones para el login
+const validarLogin = [
+    body('email').isEmail().withMessage('Email inválido'),
+    body('password').notEmpty().withMessage('La contraseña es obligatoria')
+];
+
+router.post('/login', validarLogin, async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     try {
         const { email, password } = req.body;
         const [rows] = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
@@ -44,7 +73,7 @@ router.post('/login', async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
