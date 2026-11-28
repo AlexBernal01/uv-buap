@@ -65,12 +65,16 @@ export default function Noticias() {
           
           <div className="lg:col-span-2">
             <article className="group cursor-pointer flex flex-col sm:flex-row h-full bg-gray-50 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
-              <div className="sm:w-1/2 h-64 sm:h-auto relative overflow-hidden bg-gray-200">
-                <img 
-                  src={noticiaPrincipal.imagen} 
-                  alt={noticiaPrincipal.titulo} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                />
+              <div className="sm:w-1/2 h-64 sm:h-auto relative overflow-hidden bg-gray-200 flex items-center justify-center">
+                {noticiaPrincipal.imagen ? (
+                  <img 
+                    src={noticiaPrincipal.imagen} 
+                    alt={noticiaPrincipal.titulo} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  />
+                ) : (
+                  <span className="text-gray-400 font-medium">Sin imagen disponible</span>
+                )}
               </div>
               <div className="sm:w-1/2 p-6 flex flex-col justify-center">
                 <span className="text-xs text-blue-500 font-semibold uppercase tracking-wider mb-3 block">
@@ -101,8 +105,12 @@ export default function Noticias() {
             <div className="flex flex-col gap-4">
               {noticiasRapidas.map((noticia, idx) => (
                 <a key={idx} href={noticia.enlace} target="_blank" rel="noopener noreferrer" className="flex gap-3 group">
-                  <div className="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-200">
-                    <img src={noticia.imagen} alt={noticia.titulo} className="w-full h-full object-cover" />
+                  <div className="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-200 flex items-center justify-center">
+                    {noticia.imagen ? (
+                      <img src={noticia.imagen} alt={noticia.titulo} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-[8px] text-gray-400 font-bold text-center">Sin foto</span>
+                    )}
                   </div>
                   <div>
                     <span className="text-[10px] text-blue-500 font-bold block mb-1">{noticia.fecha}</span>
@@ -119,12 +127,16 @@ export default function Noticias() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {noticiasSecundarias.map((noticia, idx) => (
             <article key={idx} className="group cursor-pointer bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
-              <div className="relative h-48 overflow-hidden bg-gray-200">
-                <img 
-                  src={noticia.imagen} 
-                  alt={noticia.titulo} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                />
+              <div className="relative h-48 overflow-hidden bg-gray-200 flex items-center justify-center">
+                {noticia.imagen ? (
+                  <img 
+                    src={noticia.imagen} 
+                    alt={noticia.titulo} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  />
+                ) : (
+                  <span className="text-gray-400 font-medium">Sin imagen disponible</span>
+                )}
               </div>
               <div className="p-5 flex flex-col flex-grow">
                 <span className="text-xs text-blue-500 font-semibold uppercase tracking-wider mb-2 block">

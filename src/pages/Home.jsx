@@ -99,11 +99,15 @@ export default function Home() {
                     return (
                       <div key={curso.id} className="group bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all flex flex-col">
                         <div className="relative h-32 w-full overflow-hidden bg-gray-200">
-                          <img
-                            src={curso.imagen_url || 'https://via.placeholder.com/400x200?text=Curso'}
-                            alt={curso.titulo}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
+                          {curso.imagen_url ? (
+                            <img
+                              src={curso.imagen_url}
+                              alt={curso.titulo}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm font-medium">Sin imagen</div>
+                          )}
                           <span className="absolute top-2 left-2 text-xs bg-buap-azul-oscuro text-white px-2 py-1 rounded">
                             {curso.carrera}
                           </span>
@@ -172,8 +176,12 @@ export default function Home() {
                   {noticias.length > 0 ? (
                     noticias.map((noticia, idx) => (
                       <a key={idx} href={noticia.enlace} target="_blank" rel="noopener noreferrer" className="flex gap-3 group border-b border-gray-50 pb-4 last:border-0 last:pb-0">
-                        <div className="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-gray-200">
-                          <img src={noticia.imagen || 'https://via.placeholder.com/150'} alt={noticia.titulo} className="w-full h-full object-cover group-hover:scale-110 transition duration-300" />
+                        <div className="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
+                          {noticia.imagen ? (
+                            <img src={noticia.imagen} alt={noticia.titulo} className="w-full h-full object-cover group-hover:scale-110 transition duration-300" />
+                          ) : (
+                            <span className="text-[10px] text-gray-400 font-bold text-center px-1">Sin imagen</span>
+                          )}
                         </div>
                         <div>
                           <span className="text-[10px] text-blue-500 font-bold block mb-1 uppercase tracking-wider">{noticia.fecha}</span>

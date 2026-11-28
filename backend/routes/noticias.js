@@ -44,7 +44,6 @@ const procesarRSS = (xml) => {
 
         const t = `${titulo} ${descLimpia}`.toLowerCase();
         
-        // Filtro: Tiene que ser de IA, DCyTIC, AURA o LNS. Descartar PDFs y convocatorias.
         const basura = t.includes('.pdf') || t.includes('convocatoria') || t.includes('inscripciones') || t.includes('puebla, cuna');
         const esValido = ['inteligencia artificial', 'ia ', ' ia', 'ia,', 'ia.', 'aura', 'algoritmo', 'algorítmic', 'lns', 'supercómputo', 'machine learning', 'deep learning', 'chatbot', 'dcytic'].some(p => t.includes(p));
 
@@ -54,7 +53,7 @@ const procesarRSS = (xml) => {
                 enlace,
                 fecha: fechaFormateada,
                 descripcion: descLimpia || 'Da clic para leer la nota completa.',
-                imagen: imagenUrl || `https://picsum.photos/seed/${encodeURIComponent(titulo.substring(0,10))}/800/400`
+                imagen: imagenUrl || null // Si no hay imagen, se manda null
             });
         }
     });
@@ -73,6 +72,11 @@ const scrapeAura = async () => {
             let enlace = $(el).find('a').attr('href');
             const descripcion = $(el).find('.post-description').text().trim().substring(0, 160) + '...';
             
+            let imagenAura = $(el).find('img').attr('src');
+            if (imagenAura && imagenAura.startsWith('/')) {
+                imagenAura = `https://www.aurabuap.mx${imagenAura}`;
+            }
+            
             if (enlace && !enlace.startsWith('http')) {
                 enlace = `https://www.aurabuap.mx${enlace.startsWith('/') ? '' : '/'}${enlace}`;
             }
@@ -83,7 +87,7 @@ const scrapeAura = async () => {
                     enlace,
                     fecha: 'Reciente',
                     descripcion: descripcion || 'Da clic para leer la nota completa.',
-                    imagen: `https://picsum.photos/seed/${encodeURIComponent(titulo.substring(0,10))}/800/400`
+                    imagen: imagenAura || null
                 });
             }
         });
@@ -93,46 +97,53 @@ const scrapeAura = async () => {
     return noticias;
 };
 
-const noticiasLNSReales = [
-    {
-        titulo: "LNS de la BUAP se consolida como un centro para el desarrollo de la ciencia",
-        enlace: "https://lns.buap.mx",
-        fecha: "2 de Diciembre de 2025",
-        descripcion: "El Laboratorio Nacional de Supercómputo impulsa la investigación en inteligencia artificial y ciencia de datos en la región.",
-        imagen: "https://picsum.photos/seed/lns1/800/400"
-    },
-    {
-        titulo: "LNS será parte del Clúster Nacional de Alto Rendimiento e IA",
-        enlace: "https://lns.buap.mx",
-        fecha: "21 de Agosto de 2025",
-        descripcion: "La BUAP forma parte de la red nacional que apoyará el entrenamiento de modelos de lenguaje masivos y aprendizaje automático.",
-        imagen: "https://picsum.photos/seed/lns2/800/400"
-    },
-    {
-        titulo: "Albergará Laboratorio de Supercómputo BUAP 120 proyectos de investigación",
-        enlace: "https://lns.buap.mx",
-        fecha: "22 de Marzo de 2024",
-        descripcion: "Investigadores de todo el país utilizan la infraestructura del LNS para simulaciones de IA, algoritmos genéticos y big data.",
-        imagen: "https://picsum.photos/seed/lns3/800/400"
-    },
-    {
-        titulo: "La BUAP se suma al Clúster Nacional de Cómputo de Alto Rendimiento",
-        enlace: "https://lns.buap.mx",
-        fecha: "28 de Agosto de 2023",
-        descripcion: "A través del LNS, la universidad fortalece la capacitación en inteligencia artificial y análisis de datos.",
-        imagen: "https://picsum.photos/seed/lns4/800/400"
+const scrapeLNS = async () => {
+    const agent = new https.Agent({ rejectUnauthorized: false });
+    const noticias = [];
+    try {
+        const { data } = await axios.get('https://lns.buap.mx', { httpsAgent: agent, headers: { 'User-Agent': 'Mozilla/5.0' }});
+        const $ = cheerio.load(data);
+        
+        // Buscamos cualquier bloque que parezca una noticia
+        $('article, .post, .news-item, .views-row').each((i, el) => {
+            const titulo = $(el).find('h2, h3, .title, .node__title').first().text().trim();
+            let enlace = $(el).find('a').attr('href');
+            
+            let imagen = $(el).find('img').attr('src');
+            if (imagen && imagen.startsWith('/')) {
+                imagen = `https://lns.buap.mx${imagen}`;
+            }
+            
+            if (enlace && !enlace.startsWith('http')) {
+                enlace = `https://lns.buap.mx${enlace.startsWith('/') ? '' : '/'}${enlace}`;
+            }
+
+            if (titulo && enlace) {
+                noticias.push({
+                    titulo,
+                    enlace,
+                    fecha: 'Reciente',
+                    descripcion: 'Da clic para leer la nota completa en el sitio del LNS.',
+                    imagen: imagen || null
+                });
+            }
+        });
+    } catch (e) {
+        console.log("Error scraping LNS:", e.message);
     }
-];
+    return noticias;
+};
 
 router.get('/tech', async (req, res) => {
     try {
-        const [auraNoticias, resTech] = await Promise.all([
+        const [auraNoticias, resTech, lnsNoticias] = await Promise.all([
             scrapeAura(),
             axios.get('https://dcytic.buap.mx/rss.xml', { httpsAgent: new https.Agent({ rejectUnauthorized: false }), headers: { 'User-Agent': 'Mozilla/5.0' }})
-                .then(r => procesarRSS(r.data)).catch(e => [])
+                .then(r => procesarRSS(r.data)).catch(e => []),
+            scrapeLNS()
         ]);
 
-        const noticias = [...auraNoticias, ...noticiasLNSReales, ...resTech];
+        const noticias = [...auraNoticias, ...lnsNoticias, ...resTech];
         let noticiasUnicas = Array.from(new Map(noticias.map(n => [n.enlace, n])).values());
 
         res.json({ data: noticiasUnicas });
