@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import rateLimit from 'express-rate-limit'; // <-- NUEVO IMPORT
 import { testConnection } from './db.js';
 import authRoutes from './routes/auth.js';
 import noticiasRoutes from './routes/noticias.js';
@@ -15,13 +14,30 @@ const app = express();
 
 
 const corsOptions = {
-    origin: ['https://uv-buap.vercel.app', 'http://localhost:5174'],
+    origin: function (origin, callback) {
+        // Permite peticiones sin origen (como Postman) o que terminen en .vercel.app o incluyan localhost
+        if (!origin || origin.endsWith('.vercel.app') || origin.includes('localhost')) {
+            callback(null, true);
+        } else {
+            callback(new Error('No permitido por CORS'));
+        }
+    },
     optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
 
 app.use(express.json());
 
+/*
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: { error: 'Demasiados intentos. Intenta más tarde.' }
+});
+app.use('/api/auth/login', loginLimiter);
+*/
+
+// Rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/noticias', noticiasRoutes);
 app.use('/api/productos', productosRoutes);
@@ -32,8 +48,9 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'API UVIE funcionando' });
 });
 
-const PORT = process.env.PORT || 10000;
+// Usar el puerto 4000 por defecto (Render usará el suyo automáticamente)
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, async () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
     await testConnection();
 });
