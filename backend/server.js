@@ -23,12 +23,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 
-const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 5,
-    message: { error: 'Demasiados intentos de login. Intenta de nuevo en 15 minutos.' }
-});
-
 app.use('/api/auth/login', loginLimiter);
 
 app.use('/api/auth', authRoutes);
