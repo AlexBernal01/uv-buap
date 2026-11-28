@@ -1,6 +1,6 @@
 import express from 'express';
 import { pool } from '../db.js';
-import { verifyToken } from '../middlewares/auth.js'; // Asumo que tienes protección
+import { verificarToken } from '../middlewares/authMiddleware.js'; // <-- IMPORT CORRECTO
 
 const router = express.Router();
 
@@ -13,8 +13,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', verificarToken, async (req, res) => {
     try {
         const { titulo, descripcion, duracion, carrera, imagen_url, link_curso } = req.body;
         await pool.query(
@@ -27,8 +26,7 @@ router.post('/', verifyToken, async (req, res) => {
     }
 });
 
-
-router.put('/:id', verifyToken, async (req, res) => {
+router.put('/:id', verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const { titulo, descripcion, duracion, carrera, imagen_url, link_curso } = req.body;
@@ -42,8 +40,7 @@ router.put('/:id', verifyToken, async (req, res) => {
     }
 });
 
-
-router.delete('/:id', verifyToken, async (req, res) => {
+router.delete('/:id', verificarToken, async (req, res) => {
     try {
         await pool.query('DELETE FROM cursos WHERE id=?', [req.params.id]);
         res.json({ mensaje: 'Curso eliminado' });
