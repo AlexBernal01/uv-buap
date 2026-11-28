@@ -35,13 +35,10 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen flex bg-gray-50 font-sans">
-      {/* SIDEBAR */}
+    
       <aside className="w-72 bg-buap-azul-oscuro text-white flex flex-col shadow-2xl z-20 sticky top-0 h-screen">
-        {/* Logo y Título */}
-        <div className="p-6 border-b border-white/10 flex items-center gap-4 bg-black/10">
-          <div className="bg-white p-2 rounded-lg shadow-sm">
-            <img src="/LU.png" alt="UVIE" className="h-8 w-auto object-contain" />
-          </div>
+        
+        
           <div>
             <h2 className="font-display font-bold text-xl leading-tight tracking-wide">UVIE</h2>
             <p className="text-[10px] text-buap-azul-claro uppercase tracking-widest font-semibold mt-1">Admin Panel</p>
