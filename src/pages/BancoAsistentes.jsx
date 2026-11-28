@@ -32,14 +32,16 @@ function EditorBloques({ bloquesIniciales, onChange }) {
   const [inputActivo, setInputActivo] = useState(null);
   const [valorTemp, setValorTemp] = useState('');
 
-  const guardarVariable = (id) => {
-    if (valorTemp.trim() === '') {
+  const guardarVariable = (id, valorForzado = null) => {
+    const valorFinal = valorForzado !== null ? valorForzado : valorTemp;
+    
+    if (valorFinal.trim() === '') {
       setInputActivo(null);
       return;
     }
 
     const nuevosBloques = bloques.map((b) =>
-      b.id === id ? { ...b, valorActual: valorTemp, editado: true } : b
+      b.id === id ? { ...b, valorActual: valorFinal, editado: true } : b
     );
 
     setBloques(nuevosBloques);
@@ -65,6 +67,28 @@ function EditorBloques({ bloquesIniciales, onChange }) {
           );
         }
 
+        // CASO ESPECIAL PARA EL ROL EN ASISTENTES
+        if (inputActivo === bloque.id && bloque.etiquetaOriginal.toUpperCase().includes('ROL')) {
+          return (
+            <select
+              key={bloque.id}
+              autoFocus
+              value={valorTemp}
+              onChange={(e) => {
+                setValorTemp(e.target.value);
+                guardarVariable(bloque.id, e.target.value);
+              }}
+              onBlur={() => setInputActivo(null)}
+              className="inline-block bg-white border-2 border-buap-azul-claro rounded px-2 py-0.5 text-sm text-buap-azul-oscuro focus:outline-none mx-1 shadow-sm font-semibold cursor-pointer"
+            >
+              <option value="" disabled>Selecciona un rol</option>
+              <option value="Administrativo">Administrativo</option>
+              <option value="Personal">Personal</option>
+            </select>
+          );
+        }
+
+        // CASO NORMAL (INPUT DE TEXTO)
         if (inputActivo === bloque.id) {
           return (
             <input
