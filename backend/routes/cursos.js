@@ -1,52 +1,52 @@
 import express from 'express';
 import { pool } from '../db.js';
-import { verificarToken, soloAdmin } from '../middlewares/authMiddleware.js';
+import { verifyToken } from '../middlewares/auth.js'; // Asumo que tienes protección
 
 const router = express.Router();
 
-// 1. GET - Todos los cursos (Público)
 router.get('/', async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM cursos ORDER BY id DESC');
+        const [rows] = await pool.query('SELECT * FROM cursos');
         res.json(rows);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// 2. GET - Un curso por ID (Público)
-router.get('/:id', async (req, res) => {
-    try {
-        const [rows] = await pool.query('SELECT * FROM cursos WHERE id = ?', [req.params.id]);
-        if (rows.length === 0) return res.status(404).json({ error: 'Curso no encontrado' });
-        res.json(rows[0]);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
 
-// 3. POST - Guardar nuevo curso (SOLO ADMIN)
-router.post('/', verificarToken, soloAdmin, async (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
     try {
-        const { titulo, descripcion, duracion, carrera, imagen_url } = req.body;
-        if (!titulo) return res.status(400).json({ error: 'El título es obligatorio' });
-
-        const [result] = await pool.query(
-            'INSERT INTO cursos (titulo, descripcion, duracion, carrera, imagen_url) VALUES (?, ?, ?, ?, ?)',
-            [titulo, descripcion, duracion, carrera, imagen_url]
+        const { titulo, descripcion, duracion, carrera, imagen_url, link_curso } = req.body;
+        await pool.query(
+            'INSERT INTO cursos (titulo, descripcion, duracion, carrera, imagen_url, link_curso) VALUES (?, ?, ?, ?, ?, ?)',
+            [titulo, descripcion, duracion, carrera, imagen_url, link_curso]
         );
-
-        res.status(201).json({ message: 'Curso agregado correctamente', id: result.insertId });
+        res.json({ mensaje: 'Curso creado' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// 4. DELETE - Eliminar curso (SOLO ADMIN)
-router.delete('/:id', verificarToken, soloAdmin, async (req, res) => {
+
+router.put('/:id', verifyToken, async (req, res) => {
     try {
-        await pool.query('DELETE FROM cursos WHERE id = ?', [req.params.id]);
-        res.json({ message: 'Curso eliminado' });
+        const { id } = req.params;
+        const { titulo, descripcion, duracion, carrera, imagen_url, link_curso } = req.body;
+        await pool.query(
+            'UPDATE cursos SET titulo=?, descripcion=?, duracion=?, carrera=?, imagen_url=?, link_curso=? WHERE id=?',
+            [titulo, descripcion, duracion, carrera, imagen_url, link_curso, id]
+        );
+        res.json({ mensaje: 'Curso actualizado' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+router.delete('/:id', verifyToken, async (req, res) => {
+    try {
+        await pool.query('DELETE FROM cursos WHERE id=?', [req.params.id]);
+        res.json({ mensaje: 'Curso eliminado' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

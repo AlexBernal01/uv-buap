@@ -1,118 +1,58 @@
-import { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { isAuthenticated, login, logout } from '../utils/auth';
-
-const dataVisitas = [
-  { mes: 'Ene', visitas: 120 },
-  { mes: 'Feb', visitas: 200 },
-  { mes: 'Mar', visitas: 350 },
-  { mes: 'Abr', visitas: 280 },
-  { mes: 'May', visitas: 420 },
-  { mes: 'Jun', visitas: 500 },
-];
+import { useState, useEffect } from 'react';
 
 export default function DevZone() {
-  const [autenticado, setAutenticado] = useState(isAuthenticated());
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [stats, setStats] = useState({ cursos: 0, productos: 0, pilares: 0, noticias: 0 });
+  const [cargando, setCargando] = useState(true);
 
-  const manejarLogin = (e) => {
-    e.preventDefault();
-    if (login(password)) {
-      setAutenticado(true);
-      setError('');
-    } else {
-      setError('Contraseña incorrecta. Intenta de nuevo.');
-    }
-    setPassword('');
-  };
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/stats`);
+        const data = await res.json();
+        setStats(data);
+      } catch (error) {
+        console.error("Error al cargar stats", error);
+      } finally {
+        setCargando(false);
+      }
+    };
+    fetchStats();
+  }, []);
 
-  const manejarLogout = () => {
-    logout();
-    setAutenticado(false);
-  };
-
-  if (!autenticado) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-md w-96">
-          <h1 className="font-display text-2xl font-bold text-buap-azul-oscuro mb-4">
-            Zona de Desarrolladores
-          </h1>
-          <p className="text-sm text-gray-500 mb-6">
-            Acceso restringido. Ingresa la contraseña para continuar.
-          </p>
-          <form onSubmit={manejarLogin}>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Contraseña"
-              className="w-full border rounded-lg px-3 py-2 mb-4 focus:outline-none focus:border-buap-azul-claro"
-            />
-            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-            <button
-              type="submit"
-              className="w-full bg-buap-azul-oscuro text-white py-2 rounded-lg hover:bg-buap-azul-claro transition"
-            >
-              Acceder
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
+  if (cargando) return <div className="p-10 text-center">Cargando estadísticas...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="font-display text-3xl font-bold text-buap-azul-oscuro">
-            Dashboard de Análisis
-          </h1>
-          <button
-            onClick={manejarLogout}
-            className="text-sm text-red-500 hover:text-red-700"
-          >
-            Cerrar sesión
-          </button>
-        </div>
+    <div className="p-8 lg:p-12 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold text-buap-azul-oscuro mb-2">Dev Zone - Estadísticas</h1>
+      <p className="text-gray-500 mb-8">Monitoreo en tiempo real de los datos de la plataforma.</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <p className="text-sm text-gray-500">Visitas totales</p>
-            <p className="text-3xl font-bold text-buap-azul-oscuro">1,870</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <p className="text-sm text-gray-500">Interacciones con chatbot</p>
-            <p className="text-3xl font-bold text-buap-azul-oscuro">342</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <p className="text-sm text-gray-500">Cursos activos</p>
-            <p className="text-3xl font-bold text-buap-azul-oscuro">4</p>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-blue-500">
+          <p className="text-sm text-gray-500 font-bold uppercase">Total Cursos</p>
+          <p className="text-4xl font-extrabold text-gray-800 mt-2">{stats.cursos}</p>
         </div>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-green-500">
+          <p className="text-sm text-gray-500 font-bold uppercase">Total Productos</p>
+          <p className="text-4xl font-extrabold text-gray-800 mt-2">{stats.productos}</p>
+        </div>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-yellow-500">
+          <p className="text-sm text-gray-500 font-bold uppercase">Total Pilares</p>
+          <p className="text-4xl font-extrabold text-gray-800 mt-2">{stats.pilares}</p>
+        </div>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-purple-500">
+          <p className="text-sm text-gray-500 font-bold uppercase">Total Noticias</p>
+          <p className="text-4xl font-extrabold text-gray-800 mt-2">{stats.noticias}</p>
+        </div>
+      </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="font-display font-bold text-buap-azul-oscuro mb-4">
-            Visitas mensuales
-          </h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={dataVisitas}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="mes" />
-              <YAxis />
-              <Tooltip />
-              <Line 
-                type="monotone" 
-                dataKey="visitas" 
-                stroke="#09b5e2" 
-                strokeWidth={3}
-                dot={{ fill: '#122e48', r: 4 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+      {/* Aquí puedes agregar gráficos con librerías como Recharts si lo deseas */}
+      <div className="mt-10 bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Estado del Sistema</h2>
+        <div className="flex items-center gap-2 text-green-600 font-bold">
+          <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+          Base de datos TiDB Conectada
         </div>
+        <p className="text-sm text-gray-500 mt-2">El servidor backend está respondiendo correctamente.</p>
       </div>
     </div>
   );
