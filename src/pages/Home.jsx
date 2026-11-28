@@ -45,6 +45,7 @@ export default function Home() {
             
             <div className="lg:col-span-2 space-y-8">
               
+              {/* Pilares Estratégicos */}
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-2">
                   <h2 className="font-display text-2xl font-bold text-buap-azul-oscuro">
@@ -83,6 +84,7 @@ export default function Home() {
                 )}
               </div>
 
+              {/* Cursos Destacados */}
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-2">
                   <h2 className="font-display text-2xl font-bold text-buap-azul-oscuro">
@@ -137,6 +139,7 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Productos Insignia */}
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-2">
                   <h2 className="font-display text-2xl font-bold text-buap-azul-oscuro">
@@ -165,6 +168,7 @@ export default function Home() {
 
             </div>
 
+            {/* Columna Derecha - Noticias */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden sticky top-4">
                 <div className="bg-buap-azul-oscuro p-4">
@@ -205,19 +209,48 @@ export default function Home() {
 
           </div>
 
-          <div className="mt-12 bg-gradient-to-r from-buap-azul-oscuro to-buap-azul-claro rounded-2xl p-8 text-white shadow-lg flex flex-col md:flex-row items-center justify-between">
-            <div className="mb-6 md:mb-0 text-center md:text-left">
-              <h2 className="text-3xl font-bold mb-2">Descubre el Banco de Prompts</h2>
-              <p className="text-white/80 max-w-xl">Acelera tu trabajo con plantillas de inteligencia artificial diseñadas específicamente para nuestra comunidad.</p>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link to="/banco-prompters" className="bg-white text-buap-azul-oscuro px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition shadow-md whitespace-nowrap text-center">
-                Para Profesores →
-              </Link>
-              <Link to="/banco-asistentes" className="bg-buap-azul-oscuro border-2 border-white text-white px-6 py-3 rounded-full font-bold hover:bg-white hover:text-buap-azul-oscuro transition shadow-md whitespace-nowrap text-center">
-                Para Asistentes →
-              </Link>
+          {/* NUEVO BANNER BANCO DE PROMPTS CON MASCOTA */}
+          <div className="relative mt-12 rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
+            <div className="absolute inset-0 bg-[url('/login-architecture.webp')] bg-cover bg-center"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-buap-azul-oscuro/95 via-buap-azul-oscuro/80 to-buap-azul-claro/50"></div>
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-8 md:p-12">
+              
+              <div className="w-full md:w-3/4 text-center md:text-left mb-8 md:mb-0">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                  Descubre el Banco de Prompts
+                </h2>
+                <p className="text-white/80 max-w-2xl text-lg mb-8">
+                  Acelera tu trabajo con plantillas de inteligencia artificial diseñadas específicamente para nuestra comunidad universitaria.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                  <Link 
+                    to="/banco-prompters" 
+                    className="bg-white text-buap-azul-oscuro px-8 py-3 rounded-full font-bold hover:bg-gray-100 hover:scale-105 transition-all shadow-lg whitespace-nowrap text-center"
+                  >
+                    Para Profesores →
+                  </Link>
+                  <Link 
+                    to="/banco-asistentes" 
+                    className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-buap-azul-oscuro hover:scale-105 transition-all shadow-lg whitespace-nowrap text-center"
+                  >
+                    Para Asistentes →
+                  </Link>
+                </div>
+              </div>
+
+              <div className="w-full md:w-1/4 flex justify-center md:justify-end relative">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-white/20 rounded-full blur-2xl transform scale-110"></div>
+                  <img 
+                    src="/lobo1.png" 
+                    alt="Mascota UVIE" 
+                    className="relative z-10 w-40 md:w-56 h-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
+
             </div>
           </div>
 
