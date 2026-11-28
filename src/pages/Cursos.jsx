@@ -18,7 +18,7 @@ export default function Cursos() {
           <h2 className="font-display text-4xl font-bold text-buap-azul-oscuro mb-2">
             Cursos para Profesores
           </h2>
-          <p className="text-gray-600">Explora nuestra oferta académica disponible en la plataforma Saberes.</p>
+          <p className="text-gray-600">Explora nuestra oferta académica disponible.</p>
         </div>
 
         <div className="flex justify-center gap-2 mb-10 flex-wrap">
@@ -74,19 +74,13 @@ export default function Cursos() {
                     rel="noopener noreferrer"
                     className="w-full block text-center bg-gray-50 text-buap-azul-oscuro border border-gray-200 font-semibold py-2 px-4 rounded-lg hover:bg-buap-azul-oscuro hover:text-white transition-colors duration-300"
                   >
-                    Ir al curso en Saberes.mx →
+                    Ir al curso →
                   </a>
                 </div>
               </div>
             );
           })}
         </div>
-
-        {cursosFiltrados.length === 0 && (
-          <p className="text-center text-gray-400 py-12 text-lg">
-            No hay cursos disponibles en esta categoría por el momento.
-          </p>
-        )}
       </div>
     </section>
   );

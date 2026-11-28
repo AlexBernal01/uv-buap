@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import AdminLayout from './components/AdminLayout'; // <-- Nuevo Layout
 import Home from './pages/Home';
 import DevZone from './pages/DevZone';
 import Pilares from './pages/Pilares';
@@ -9,10 +10,8 @@ import Noticias from './pages/Noticias';
 import Cursos from './pages/Cursos';
 import BancoPrompters from './pages/BancoPrompters';
 import Chatbot from './components/Chatbot';
-import CursoDetalle from './pages/CursoDetalle';
 import BancoAsistentes from './pages/BancoAsistentes';
 
-// --- IMPORTACIONES NUEVAS (Seguridad y Admin) ---
 import Login from './pages/Login';
 import AdminCursos from './pages/AdminCursos';
 import AdminRoute from './components/AdminRoute';
@@ -21,6 +20,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* --- SITIO PÚBLICO --- */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/pilares" element={<Pilares />} />
@@ -33,12 +33,16 @@ function App() {
           <Route path="/dev" element={<DevZone />} />
         </Route>
 
+        {/* --- LOGIN --- */}
         <Route path="/login" element={<Login />} />
 
-       <Route element={<AdminRoute />}>
-         <Route path="/admin/cursos" element={<AdminCursos />} />
+        {/* --- PANEL DE ADMINISTRACIÓN (Protegido) --- */}
+        <Route element={<AdminRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin/cursos" element={<AdminCursos />} />
+            {/* Aquí irán tus futuras vistas de AdminProductos, AdminPilares, etc. */}
+          </Route>
         </Route>
-
       </Routes>
       <Chatbot />
     </BrowserRouter>
