@@ -58,6 +58,9 @@ export default function Header() {
           <Link to="/sobre-nosotros" className="hover:text-buap-azul-claro transition">
             Sobre Nosotros
           </Link>
+          <Link to="/login" className="hover:text-buap-azul-claro transition">
+            Login
+          </Link>
         </nav>
       </div>
     </header>
