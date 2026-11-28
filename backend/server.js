@@ -9,6 +9,7 @@ import pilaresRoutes from './routes/pilares.js';
 import cursosRoutes from './routes/cursos.js';
 import statsRoutes from './routes/stats.js';
 import visitasRoutes from './routes/visitas.js';
+import helmet from 'helmet';
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ const app = express();
 
 const corsOptions = {
     origin: function (origin, callback) {
-        // Permite peticiones sin origen (como Postman) o que terminen en .vercel.app o incluyan localhost
+        
         if (!origin || origin.endsWith('.vercel.app') || origin.includes('localhost')) {
             callback(null, true);
         } else {
@@ -39,7 +40,7 @@ const loginLimiter = rateLimit({
 app.use('/api/auth/login', loginLimiter);
 */
 
-// Rutas
+
 app.use('/api/auth', authRoutes);
 app.use('/api/noticias', noticiasRoutes);
 app.use('/api/productos', productosRoutes);
@@ -47,12 +48,13 @@ app.use('/api/pilares', pilaresRoutes);
 app.use('/api/cursos', cursosRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/visitas', visitasRoutes);
+app.use(helmet());
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'API UVIE funcionando' });
 });
 
-// Usar el puerto 4000 por defecto (Render usará el suyo automáticamente)
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, async () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
