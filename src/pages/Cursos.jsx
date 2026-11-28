@@ -39,23 +39,40 @@ export default function Cursos() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {cursosFiltrados.map((curso) => {
-            const urlDestino = curso.link_curso || '#'; 
+           const urlDestino = curso.link_curso && curso.link_curso.trim() !== '' ? curso.link_curso : null;
             
             return (
               <div key={curso.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col border-t-4 border-t-buap-azul-oscuro">
-                <a href={urlDestino} target="_blank" rel="noopener noreferrer" className="relative h-48 w-full overflow-hidden bg-gray-200 block group">
-                  <img
-                    src={curso.imagen_url || 'https://via.placeholder.com/400x200?text=Curso'}
-                    alt={curso.titulo}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="text-xs font-bold uppercase tracking-wider bg-buap-azul-oscuro text-white px-3 py-1 rounded-sm shadow-sm">
-                      {curso.carrera}
-                    </span>
+                
+                {urlDestino ? (
+                  <a href={urlDestino} target="_blank" rel="noopener noreferrer" className="relative h-48 w-full overflow-hidden bg-gray-200 block group cursor-pointer">
+                    <img
+                      src={curso.imagen_url || 'https://via.placeholder.com/400x200?text=Curso'}
+                      alt={curso.titulo}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="text-xs font-bold uppercase tracking-wider bg-buap-azul-oscuro text-white px-3 py-1 rounded-sm shadow-sm">
+                        {curso.carrera}
+                      </span>
+                    </div>
+                  </a>
+                ) : (
+                  <div className="relative h-48 w-full overflow-hidden bg-gray-200 block group cursor-default">
+                    <img
+                      src={curso.imagen_url || 'https://via.placeholder.com/400x200?text=Curso'}
+                      alt={curso.titulo}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="text-xs font-bold uppercase tracking-wider bg-buap-azul-oscuro text-white px-3 py-1 rounded-sm shadow-sm">
+                        {curso.carrera}
+                      </span>
+                    </div>
                   </div>
-                </a>
+                )}
 
                 <div className="p-6 flex flex-col flex-1">
                   <h3 className="font-bold text-xl text-buap-azul-oscuro mb-2 line-clamp-2 leading-tight">
@@ -68,14 +85,23 @@ export default function Cursos() {
                     {curso.descripcion || 'Sin descripción disponible.'}
                   </p>
                   
-                  <a 
-                    href={urlDestino} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-full block text-center bg-gray-50 text-buap-azul-oscuro border border-gray-200 font-semibold py-2 px-4 rounded-lg hover:bg-buap-azul-oscuro hover:text-white transition-colors duration-300"
-                  >
-                    Ir al curso →
-                  </a>
+                  {urlDestino ? (
+                    <a 
+                      href={urlDestino} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="w-full block text-center bg-gray-50 text-buap-azul-oscuro border border-gray-200 font-semibold py-2 px-4 rounded-lg hover:bg-buap-azul-oscuro hover:text-white transition-colors duration-300"
+                    >
+                      Ir al curso →
+                    </a>
+                  ) : (
+                    <button 
+                      disabled 
+                      className="w-full block text-center bg-gray-100 text-gray-400 border border-gray-200 font-semibold py-2 px-4 rounded-lg cursor-not-allowed"
+                    >
+                      Próximamente
+                    </button>
+                  )}
                 </div>
               </div>
             );
