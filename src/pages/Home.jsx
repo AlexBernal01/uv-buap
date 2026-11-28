@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
 import { useSupabaseData } from '../hooks/useSupabaseData';
 
+// IMPORTAMOS LA IMAGEN LOCAL PARA EL FONDO DEL BANNER
+import fondoBanner from '../assets/login-architecture.webp';
+
 export default function Home() {
   const { data: pilares, loading: loadingPilares } = useSupabaseData('pilares', {
     order: 'orden',
@@ -209,14 +212,20 @@ export default function Home() {
 
           </div>
 
-          {/* NUEVO BANNER BANCO DE PROMPTS CON MASCOTA */}
-          <div className="relative mt-12 rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
-            <div className="absolute inset-0 bg-[url('/login-architecture.webp')] bg-cover bg-center"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-buap-azul-oscuro/95 via-buap-azul-oscuro/80 to-buap-azul-claro/50"></div>
+          {/* BANNER BANCO DE PROMPTS (Sin Lobo, con fondo local) */}
+          <div className="relative mt-12 rounded-2xl overflow-hidden shadow-xl">
+            {/* Imagen de fondo importada desde assets */}
+            <img 
+              src={fondoBanner} 
+              alt="Fondo Banner" 
+              className="absolute inset-0 w-full h-full object-cover" 
+            />
+            
+            {/* Capa de degradado para que el texto se lea bien */}
+            <div className="absolute inset-0 bg-gradient-to-r from-buap-azul-oscuro/95 via-buap-azul-oscuro/80 to-buap-azul-claro/60"></div>
 
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-8 md:p-12">
-              
-              <div className="w-full md:w-3/4 text-center md:text-left mb-8 md:mb-0">
+              <div className="w-full md:w-2/3 text-center md:text-left mb-8 md:mb-0">
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
                   Descubre el Banco de Prompts
                 </h2>
@@ -239,18 +248,6 @@ export default function Home() {
                   </Link>
                 </div>
               </div>
-
-              <div className="w-full md:w-1/4 flex justify-center md:justify-end relative">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-white/20 rounded-full blur-2xl transform scale-110"></div>
-                  <img 
-                    src="/lobo1.png" 
-                    alt="Mascota UVIE" 
-                    className="relative z-10 w-40 md:w-56 h-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-              </div>
-
             </div>
           </div>
 
