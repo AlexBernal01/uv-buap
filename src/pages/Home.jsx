@@ -212,7 +212,7 @@ export default function Home() {
 
           </div>
 
-          {/* BANNER BANCO DE PROMPTS (Sin Lobo, con fondo local) */}
+                  {/* BANNER BANCO DE PROMPTS */}
           <div className="relative mt-12 rounded-2xl overflow-hidden shadow-xl">
             {/* Imagen de fondo importada desde assets */}
             <img 
@@ -224,30 +224,34 @@ export default function Home() {
             {/* Capa de degradado para que el texto se lea bien */}
             <div className="absolute inset-0 bg-gradient-to-r from-buap-azul-oscuro/95 via-buap-azul-oscuro/80 to-buap-azul-claro/60"></div>
 
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-8 md:p-12">
-              <div className="w-full md:w-2/3 text-center md:text-left mb-8 md:mb-0">
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between p-8 md:p-12 gap-8">
+              
+              {/* Columna Izquierda: Texto */}
+              <div className="w-full md:w-3/5 text-center md:text-left">
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
                   Descubre el Banco de Prompts
                 </h2>
-                <p className="text-white/80 max-w-2xl text-lg mb-8">
+                <p className="text-white/80 text-lg">
                   Acelera tu trabajo con plantillas de inteligencia artificial diseñadas específicamente para nuestra comunidad universitaria.
                 </p>
-                
-                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                  <Link 
-                    to="/banco-prompters" 
-                    className="bg-white text-buap-azul-oscuro px-8 py-3 rounded-full font-bold hover:bg-gray-100 hover:scale-105 transition-all shadow-lg whitespace-nowrap text-center"
-                  >
-                    Para Profesores →
-                  </Link>
-                  <Link 
-                    to="/banco-asistentes" 
-                    className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-buap-azul-oscuro hover:scale-105 transition-all shadow-lg whitespace-nowrap text-center"
-                  >
-                    Para Asistentes →
-                  </Link>
-                </div>
               </div>
+
+              {/* Columna Derecha: Botones Apilados */}
+              <div className="w-full md:w-2/5 flex flex-col gap-4 items-center md:items-end justify-center">
+                <Link 
+                  to="/banco-prompters" 
+                  className="w-full sm:w-64 bg-white text-buap-azul-oscuro px-8 py-3 rounded-full font-bold hover:bg-gray-100 hover:scale-105 transition-all shadow-lg text-center"
+                >
+                  Para Profesores →
+                </Link>
+                <Link 
+                  to="/banco-asistentes" 
+                  className="w-full sm:w-64 bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-buap-azul-oscuro hover:scale-105 transition-all shadow-lg text-center"
+                >
+                  Para Asistentes →
+                </Link>
+              </div>
+
             </div>
           </div>
 
