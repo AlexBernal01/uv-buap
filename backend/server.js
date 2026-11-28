@@ -7,6 +7,7 @@ import noticiasRoutes from './routes/noticias.js';
 import productosRoutes from './routes/productos.js';
 import pilaresRoutes from './routes/pilares.js';
 import cursosRoutes from './routes/cursos.js';
+import statsRoutes from './routes/stats.js';
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use('/api/noticias', noticiasRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/pilares', pilaresRoutes);
 app.use('/api/cursos', cursosRoutes);
+app.use('/api/stats', statsRoutes);
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', message: 'API UVIE funcionando' });

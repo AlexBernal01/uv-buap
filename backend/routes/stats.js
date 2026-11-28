@@ -1,6 +1,9 @@
-import { pool } from './db.js'; 
+import express from 'express';
+import { pool } from '../db.js';
 
-app.get('/api/stats', async (req, res) => {
+const router = express.Router();
+
+router.get('/', async (req, res) => {
     try {
         const [cursos] = await pool.query('SELECT COUNT(*) as count FROM cursos');
         const [productos] = await pool.query('SELECT COUNT(*) as count FROM productos');
@@ -17,3 +20,5 @@ app.get('/api/stats', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+export default router;
