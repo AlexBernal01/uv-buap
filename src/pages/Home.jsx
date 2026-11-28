@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
 import { useSupabaseData } from '../hooks/useSupabaseData';
@@ -9,13 +9,26 @@ export default function Home() {
     ascending: true
   });
   const { data: productos } = useSupabaseData('productos');
-  const { data: noticias } = useSupabaseData('noticias', {
-    order: 'fecha',
-    ascending: false
-  });
   const { data: cursos } = useSupabaseData('cursos');
 
+  const [noticias, setNoticias] = useState([]);
   const [pilarAbierto, setPilarAbierto] = useState(null);
+
+  useEffect(() => {
+    const cargarNoticias = async () => {
+      try {
+        const API_URL = import.meta.env.VITE_API_URL || 'https://uv-buap.onrender.com';
+        const respuesta = await fetch(`${API_URL}/noticias/tech`);
+        if (respuesta.ok) {
+          const data = await respuesta.json();
+          setNoticias(data.data || []);
+        }
+      } catch (err) {
+        console.error("Error cargando noticias:", err);
+      }
+    };
+    cargarNoticias();
+  }, []);
 
   const togglePilar = (id) => {
     setPilarAbierto(prev => (prev === id ? null : id));
@@ -157,10 +170,10 @@ export default function Home() {
                 </div>
                 <div className="p-4 space-y-4 max-h-[800px] overflow-y-auto">
                   {noticias.length > 0 ? (
-                    noticias.map((noticia) => (
-                      <a key={noticia.id} href={noticia.enlace} target="_blank" rel="noopener noreferrer" className="flex gap-3 group border-b border-gray-50 pb-4 last:border-0 last:pb-0">
+                    noticias.map((noticia, idx) => (
+                      <a key={idx} href={noticia.enlace} target="_blank" rel="noopener noreferrer" className="flex gap-3 group border-b border-gray-50 pb-4 last:border-0 last:pb-0">
                         <div className="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-gray-200">
-                          <img src={noticia.imagen_url || 'https://via.placeholder.com/150'} alt={noticia.titulo} className="w-full h-full object-cover group-hover:scale-110 transition duration-300" />
+                          <img src={noticia.imagen || 'https://via.placeholder.com/150'} alt={noticia.titulo} className="w-full h-full object-cover group-hover:scale-110 transition duration-300" />
                         </div>
                         <div>
                           <span className="text-[10px] text-blue-500 font-bold block mb-1 uppercase tracking-wider">{noticia.fecha}</span>
@@ -171,7 +184,7 @@ export default function Home() {
                       </a>
                     ))
                   ) : (
-                    <p className="text-gray-400 text-sm">No hay noticias disponibles.</p>
+                    <p className="text-gray-400 text-sm">Cargando noticias o no hay disponibles.</p>
                   )}
                 </div>
                 <div className="p-4 bg-gray-50 border-t border-gray-100 text-center">
@@ -187,11 +200,17 @@ export default function Home() {
           <div className="mt-12 bg-gradient-to-r from-buap-azul-oscuro to-buap-azul-claro rounded-2xl p-8 text-white shadow-lg flex flex-col md:flex-row items-center justify-between">
             <div className="mb-6 md:mb-0 text-center md:text-left">
               <h2 className="text-3xl font-bold mb-2">Descubre el Banco de Prompts</h2>
-              <p className="text-white/80 max-w-xl">Acelera tu trabajo con plantillas de inteligencia artificial diseñadas específicamente para profesores y asistentes.</p>
+              <p className="text-white/80 max-w-xl">Acelera tu trabajo con plantillas de inteligencia artificial diseñadas específicamente para nuestra comunidad.</p>
             </div>
-            <Link to="/banco-prompters" className="bg-white text-buap-azul-oscuro px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition shadow-md whitespace-nowrap">
-              Explorar Ahora →
-            </Link>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link to="/banco-prompters" className="bg-white text-buap-azul-oscuro px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition shadow-md whitespace-nowrap text-center">
+                Para Profesores →
+              </Link>
+              <Link to="/banco-asistentes" className="bg-buap-azul-oscuro border-2 border-white text-white px-6 py-3 rounded-full font-bold hover:bg-white hover:text-buap-azul-oscuro transition shadow-md whitespace-nowrap text-center">
+                Para Asistentes →
+              </Link>
+            </div>
           </div>
 
         </div>
