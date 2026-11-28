@@ -8,9 +8,9 @@ const GNEWS_API_KEY = process.env.GNEWS_API_KEY;
 
 const obtenerNoticiasIA = async () => {
     try {
-        // Buscamos noticias de IA en México y Puebla
-        const query = '"inteligencia artificial" OR "AI" OR "machine learning" Puebla OR BUAP';
-        const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=es&country=mx&max=10&apikey=${GNEWS_API_KEY}`;
+       
+        const query = 'inteligencia artificial';
+        const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=es&max=10&apikey=${GNEWS_API_KEY}`;
         
         const { data } = await axios.get(url);
         
