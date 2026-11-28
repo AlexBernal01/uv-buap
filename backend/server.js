@@ -22,9 +22,6 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-
-app.use('/api/auth/login', loginLimiter);
-
 app.use('/api/auth', authRoutes);
 app.use('/api/noticias', noticiasRoutes);
 app.use('/api/productos', productosRoutes);
