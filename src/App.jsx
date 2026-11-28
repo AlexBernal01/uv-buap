@@ -11,7 +11,8 @@ import Cursos from './pages/Cursos';
 import BancoPrompters from './pages/BancoPrompters';
 import Chatbot from './components/Chatbot';
 import BancoAsistentes from './pages/BancoAsistentes';
-
+import AdminProductos from './pages/AdminProductos'; // <-- Nueva
+import AdminPilares from './pages/AdminPilares';   
 import Login from './pages/Login';
 import AdminCursos from './pages/AdminCursos';
 import AdminRoute from './components/AdminRoute';
@@ -30,17 +31,18 @@ function App() {
           <Route path="/cursos" element={<Cursos />} />
           <Route path="/banco-prompters" element={<BancoPrompters />} />
           <Route path="banco-asistentes" element={<BancoAsistentes/>} />
-          <Route path="/dev" element={<DevZone />} />
+          <Route path="/devzone" element={<DevZone />} />
         </Route>
 
-        {/* --- LOGIN --- */}
+      
         <Route path="/login" element={<Login />} />
 
-        {/* --- PANEL DE ADMINISTRACIÓN (Protegido) --- */}
+        
         <Route element={<AdminRoute />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin/cursos" element={<AdminCursos />} />
-            {/* Aquí irán tus futuras vistas de AdminProductos, AdminPilares, etc. */}
+            <Route path="/admin/productos" element={<AdminProductos />} /> {/* <-- Nueva Ruta */}
+            <Route path="/admin/pilares" element={<AdminPilares />} />     {/* <-- Nueva Ruta */}
           </Route>
         </Route>
       </Routes>

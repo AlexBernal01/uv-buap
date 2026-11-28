@@ -14,12 +14,11 @@ export default function AdminLayout() {
     { name: 'Cursos', path: '/admin/cursos' },
     { name: 'Productos', path: '/admin/productos' },
     { name: 'Pilares', path: '/admin/pilares' },
-    { name: 'Dev Zone', path: '/admin/dev' },
+    { name: 'Dev Zone', path: '/admin/devzone' },
   ];
 
   return (
     <div className="min-h-screen flex bg-gray-100">
-      {/* Sidebar Izquierdo */}
       <aside className="w-64 bg-buap-azul-oscuro text-white flex flex-col shadow-xl z-20">
         <div className="p-6 border-b border-white/10 flex items-center gap-3">
           <img src="/LU.png" alt="UVIE" className="h-10 w-auto" />
@@ -48,7 +47,7 @@ export default function AdminLayout() {
 
         <div className="p-4 border-t border-white/10 space-y-2">
           <button className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 text-white/80 transition-colors">
-            Settings
+            Configuracion
           </button>
           <button 
             onClick={handleLogout}
@@ -57,7 +56,7 @@ export default function AdminLayout() {
             Cerrar Sesión
           </button>
           <Link to="/" className="block text-center mt-4 text-xs text-white/50 hover:text-white transition">
-            Volver al sitio público
+            Volver a UVIE
           </Link>
         </div>
       </aside>
