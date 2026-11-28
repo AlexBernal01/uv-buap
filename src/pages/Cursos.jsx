@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useSupabaseData } from '../hooks/useSupabaseData';
 
 export default function Cursos() {
@@ -13,22 +12,25 @@ export default function Cursos() {
     filtro === 'todos' ? cursos : cursos.filter((c) => c.carrera === filtro);
 
   return (
-    <section className="py-16">
+    <section className="py-16 bg-gray-50 min-h-screen">
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="font-display text-3xl font-bold text-buap-azul-oscuro mb-4">
-          Cursos para Profesores
-        </h2>
+        <div className="text-center mb-10">
+          <h2 className="font-display text-4xl font-bold text-buap-azul-oscuro mb-2">
+            Cursos para Profesores
+          </h2>
+          <p className="text-gray-600">Explora nuestra oferta académica disponible en la plataforma Saberes.</p>
+        </div>
 
         {/* Filtros */}
-        <div className="flex gap-2 mb-6 flex-wrap">
+        <div className="flex justify-center gap-2 mb-10 flex-wrap">
           {['todos', 'administracion', 'gastronomia', 'comercio'].map((f) => (
             <button
               key={f}
               onClick={() => setFiltro(f)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
+              className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
                 filtro === f
-                  ? 'bg-buap-azul-oscuro text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-buap-azul-oscuro text-white shadow-md'
+                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-100'
               }`}
             >
               {f === 'todos' ? 'Todos' : f.charAt(0).toUpperCase() + f.slice(1)}
@@ -37,48 +39,57 @@ export default function Cursos() {
         </div>
 
         {/* Grid de cursos */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {cursosFiltrados.map((curso) => (
-            <Link
-  key={curso.id}
-  to={`/cursos/${curso.id}`}
-  className="group bg-white rounded-lg shadow-sm border border-gray-100 border-l-4 border-l-buap-azul-claro overflow-hidden hover:shadow-md transition-all duration-300 flex h-44"
->
-  {/* Columna izquierda: texto */}
-  <div className="flex-1 p-4 flex flex-col justify-between min-w-0">
-    <div>
-      <h3 className="font-semibold text-buap-azul-oscuro leading-tight line-clamp-2">
-        {curso.titulo}
-      </h3>
-      <p className="text-sm text-gray-500 mt-1">
-        Duración: {curso.duracion}
-      </p>
-      <span className="inline-block mt-2 text-xs bg-buap-azul-claro/10 text-buap-azul-oscuro px-2 py-1 rounded">
-        {curso.carrera}
-      </span>
-    </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {cursosFiltrados.map((curso) => {
+            const urlDestino = curso.link_curso || '#'; // Si no hay link, no hace nada
+            
+            return (
+              <div key={curso.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col border-t-4 border-t-buap-azul-oscuro">
+                {/* Imagen clickeable */}
+                <a href={urlDestino} target="_blank" rel="noopener noreferrer" className="relative h-48 w-full overflow-hidden bg-gray-200 block group">
+                  <img
+                    src={curso.imagen_url || 'https://via.placeholder.com/400x200?text=Curso'}
+                    alt={curso.titulo}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className="text-xs font-bold uppercase tracking-wider bg-buap-azul-oscuro text-white px-3 py-1 rounded-sm shadow-sm">
+                      {curso.carrera}
+                    </span>
+                  </div>
+                </a>
 
-    <span className="inline-block mt-4 text-sm font-semibold text-buap-azul-claro group-hover:underline">
-      Ir al curso →
-    </span>
-  </div>
-
-  {/* Columna derecha: imagen con división vertical */}
-  <div className="w-32 sm:w-40 md:w-48 shrink-0 border-l border-gray-200 bg-gray-50">
-    <img
-      src={curso.imagen_url || 'https://via.placeholder.com/300x300?text=Curso'}
-      alt={curso.titulo}
-      className="w-full h-full object-cover"
-      loading="lazy"
-    />
-  </div>
-</Link>
-          ))}
+                {/* Contenido */}
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="font-bold text-xl text-buap-azul-oscuro mb-2 line-clamp-2 leading-tight">
+                    {curso.titulo}
+                  </h3>
+                  <p className="text-sm text-gray-500 font-medium mb-4">
+                    ⏱ Duración: {curso.duracion}
+                  </p>
+                  <p className="text-gray-600 text-sm mb-6 line-clamp-3 flex-1">
+                    {curso.descripcion || 'Sin descripción disponible.'}
+                  </p>
+                  
+                  {/* Botón de ir al curso */}
+                  <a 
+                    href={urlDestino} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full block text-center bg-gray-50 text-buap-azul-oscuro border border-gray-200 font-semibold py-2 px-4 rounded-lg hover:bg-buap-azul-oscuro hover:text-white transition-colors duration-300"
+                  >
+                    Ir al curso en Saberes.mx →
+                  </a>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {cursosFiltrados.length === 0 && (
-          <p className="text-center text-gray-400 py-8">
-            No hay cursos en esta categoría.
+          <p className="text-center text-gray-400 py-12 text-lg">
+            No hay cursos disponibles en esta categoría por el momento.
           </p>
         )}
       </div>
