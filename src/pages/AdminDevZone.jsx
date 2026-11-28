@@ -62,7 +62,7 @@ export default function AdminDevZone() {
           Base de Datos (TiDB) Conectada
         </div>
         <p className="text-sm text-gray-500 mt-3">
-          El frontend se está comunicando correctamente con el servidor en Render.
+          El frontend se está comunicando correctamente con el servidor.
         </p>
       </div>
     </div>
