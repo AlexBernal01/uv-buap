@@ -16,6 +16,7 @@ import AdminPilares from './pages/AdminPilares';
 import Login from './pages/Login';
 import AdminCursos from './pages/AdminCursos';
 import AdminRoute from './components/AdminRoute';
+import AdminDevZone from './pages/AdminDevZone'; 
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/banco-prompters" element={<BancoPrompters />} />
           <Route path="banco-asistentes" element={<BancoAsistentes/>} />
           <Route path="/devzone" element={<DevZone />} />
+          
         </Route>
 
       
@@ -41,8 +43,9 @@ function App() {
         <Route element={<AdminRoute />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin/cursos" element={<AdminCursos />} />
-            <Route path="/admin/productos" element={<AdminProductos />} /> {/* <-- Nueva Ruta */}
-            <Route path="/admin/pilares" element={<AdminPilares />} />     {/* <-- Nueva Ruta */}
+            <Route path="/admin/productos" element={<AdminProductos />} /> 
+            <Route path="/admin/pilares" element={<AdminPilares />} />     
+            <Route path="/admin/devzone" element={<AdminDevZone />} />
           </Route>
         </Route>
       </Routes>

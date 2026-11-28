@@ -13,7 +13,6 @@ export default function AdminLayout() {
   const menuItems = [
     { name: 'Cursos', path: '/admin/cursos' },
     { name: 'Productos', path: '/admin/productos' },
-    { name: 'Pilares', path: '/admin/pilares' },
     { name: 'Dev Zone', path: '/admin/devzone' },
   ];
 

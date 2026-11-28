@@ -1,36 +1,49 @@
 import express from 'express';
 import { pool } from '../db.js';
+import { verifyToken } from '../middlewares/auth.js';
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM productos ORDER BY id ASC');
-      
-        const productos = rows.map(row => ({
-            ...row,
-            entregables: typeof row.entregables === 'string' 
-                ? JSON.parse(row.entregables) 
-                : row.entregables
-        }));
-        res.json(productos);
+        const [rows] = await pool.query('SELECT * FROM productos');
+        res.json(rows);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM productos WHERE id = ?', [req.params.id]);
-        if (rows.length === 0) return res.status(404).json({ error: 'Producto no encontrado' });
-        
-        const producto = {
-            ...rows[0],
-            entregables: typeof rows[0].entregables === 'string' 
-                ? JSON.parse(rows[0].entregables) 
-                : rows[0].entregables
-        };
-        res.json(producto);
+        const { titulo, descripcion, imagen_url, precio } = req.body;
+        await pool.query(
+            'INSERT INTO productos (titulo, descripcion, imagen_url, precio) VALUES (?, ?, ?, ?)',
+            [titulo, descripcion, imagen_url, precio]
+        );
+        res.json({ mensaje: 'Producto creado' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.put('/:id', verifyToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { titulo, descripcion, imagen_url, precio } = req.body;
+        await pool.query(
+            'UPDATE productos SET titulo=?, descripcion=?, imagen_url=?, precio=? WHERE id=?',
+            [titulo, descripcion, imagen_url, precio, id]
+        );
+        res.json({ mensaje: 'Producto actualizado' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.delete('/:id', verifyToken, async (req, res) => {
+    try {
+        await pool.query('DELETE FROM productos WHERE id=?', [req.params.id]);
+        res.json({ mensaje: 'Producto eliminado' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
