@@ -6,29 +6,20 @@ import { pool } from '../db.js';
 
 const router = express.Router();
 
-const extraerImagenDeEnlace = async (url) => {
-    try {
-        const agent = new https.Agent({ rejectUnauthorized: false });
-        const { data } = await axios.get(url, { httpsAgent: agent, headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 5000 });
-        const $ = cheerio.load(data);
-        let img = $('meta[property="og:image"]').attr('content');
-        if (!img) img = $('meta[name="twitter:image"]').attr('content');
-        return img || null;
-    } catch (error) {
-        return null;
-    }
-};
-
 const scrapeBoletinBUAP = async () => {
     const agent = new https.Agent({ rejectUnauthorized: false });
     const noticias = [];
+    
     try {
-        // Scrapeamos la página principal de boletines
-        const { data } = await axios.get('https://boletin.buap.mx/boletines', { httpsAgent: agent, headers: { 'User-Agent': 'Mozilla/5.0' }});
-        const $ = cheerio.load(data);
+        const { data } = await axios.get('https://boletin.buap.mx/boletines', { 
+            httpsAgent: agent, 
+            headers: { 'User-Agent': 'Mozilla/5.0' },
+            timeout: 10000
+        });
         
-        // Buscamos todos los enlaces que apunten a una nota (nodos)
+        const $ = cheerio.load(data);
         const enlacesNotas = new Set();
+        
         $('a').each((i, el) => {
             const href = $(el).attr('href');
             if (href && (href.includes('/node/') || href.includes('?q=node/'))) {
@@ -37,17 +28,20 @@ const scrapeBoletinBUAP = async () => {
             }
         });
 
-        // Procesamos cada enlace (limitamos a 15 para no saturar)
-        const promesas = Array.from(enlacesNotas).slice(0, 15).map(async (url) => {
+        const promesas = Array.from(enlacesNotas).slice(0, 20).map(async (url) => {
             try {
-                const { data: notaHtml } = await axios.get(url, { httpsAgent: agent, headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 5000 });
+                const { data: notaHtml } = await axios.get(url, { 
+                    httpsAgent: agent, 
+                    headers: { 'User-Agent': 'Mozilla/5.0' }, 
+                    timeout: 5000 
+                });
+                
                 const $nota = cheerio.load(notaHtml);
                 
                 const titulo = $nota('h1').first().text().trim() || $nota('title').text().trim();
                 const fechaTexto = $nota('.date, .field--name-created, time').first().text().trim();
                 const descripcion = $nota('meta[name="description"]').attr('content') || '';
                 
-                // Extraemos la imagen real de la nota
                 let imagen = $nota('meta[property="og:image"]').attr('content');
                 if (!imagen) imagen = $nota('meta[name="twitter:image"]').attr('content');
                 if (!imagen) imagen = $nota('.field--name-field-image img, article img').first().attr('src');
@@ -56,7 +50,6 @@ const scrapeBoletinBUAP = async () => {
                     imagen = `https://boletin.buap.mx${imagen}`;
                 }
 
-                // Filtro de Inteligencia Artificial
                 const textoFiltro = `${titulo} ${descripcion}`.toLowerCase();
                 const palabrasIA = ['inteligencia artificial', 'ia ', ' ia', 'ia,', 'ia.', 'aura', 'algoritmo', 'algorítmic', 'machine learning', 'deep learning', 'chatbot', 'dcytic', 'supercómputo', 'ética algorítmica'];
                 const esIA = palabrasIA.some(p => textoFiltro.includes(p));
@@ -84,46 +77,46 @@ const scrapeBoletinBUAP = async () => {
     }
 };
 
-// Mantenemos AURA y LNS por si quieres combinarlos, o puedes quitarlos si solo quieres BUAP
-const scrapeAura = async () => {
-    // ... (tu código actual de AURA se queda igual)
-    return [];
-};
-
-const scrapeLNS = async () => {
-    // ... (tu código actual de LNS se queda igual)
-    return [];
-};
-
 router.get('/tech', async (req, res) => {
     try {
-        // Ahora la fuente principal es el Boletín BUAP
-        const [boletinNoticias, auraNoticias, lnsNoticias] = await Promise.all([
-            scrapeBoletinBUAP(),
-            scrapeAura(),
-            scrapeLNS()
-        ]);
-
-        const noticias = [...boletinNoticias, ...auraNoticias, ...lnsNoticias];
+        const noticias = await scrapeBoletinBUAP();
+        
         let noticiasUnicas = Array.from(new Map(noticias.map(n => [n.enlace, n])).values());
 
         res.json({ data: noticiasUnicas });
-
     } catch (error) {
         console.error('Error crítico:', error.message);
         res.status(500).json({ error: 'Error al cargar noticias' });
     }
 });
 
-// ... (tus otras rutas GET, POST se quedan igual)
 router.get('/', async (req, res) => {
-    try { const [rows] = await pool.query('SELECT * FROM noticias ORDER BY fecha DESC'); res.json(rows); } catch (error) { res.status(500).json({ error: error.message }); }
+    try { 
+        const [rows] = await pool.query('SELECT * FROM noticias ORDER BY fecha DESC'); 
+        res.json(rows); 
+    } catch (error) { 
+        res.status(500).json({ error: error.message }); 
+    }
 });
+
 router.get('/:id', async (req, res) => {
-    try { const [rows] = await pool.query('SELECT * FROM noticias WHERE id = ?', [req.params.id]); if (rows.length === 0) return res.status(404).json({ error: 'No encontrada' }); res.json(rows[0]); } catch (error) { res.status(500).json({ error: error.message }); }
+    try { 
+        const [rows] = await pool.query('SELECT * FROM noticias WHERE id = ?', [req.params.id]); 
+        if (rows.length === 0) return res.status(404).json({ error: 'No encontrada' }); 
+        res.json(rows[0]); 
+    } catch (error) { 
+        res.status(500).json({ error: error.message }); 
+    }
 });
+
 router.post('/', async (req, res) => {
-    try { const { titulo, fecha, contenido, imagen, imagen_url } = req.body; const [result] = await pool.query('INSERT INTO noticias (titulo, fecha, contenido, imagen, imagen_url) VALUES (?, ?, ?, ?, ?)', [titulo, fecha, contenido, imagen, imagen_url]); res.status(201).json({ id: result.insertId }); } catch (error) { res.status(500).json({ error: error.message }); }
+    try { 
+        const { titulo, fecha, contenido, imagen, imagen_url } = req.body; 
+        const [result] = await pool.query('INSERT INTO noticias (titulo, fecha, contenido, imagen, imagen_url) VALUES (?, ?, ?, ?, ?)', [titulo, fecha, contenido, imagen, imagen_url]); 
+        res.status(201).json({ id: result.insertId }); 
+    } catch (error) { 
+        res.status(500).json({ error: error.message }); 
+    }
 });
 
 export default router;
