@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -33,34 +33,38 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border-t-4 border-buap-azul-oscuro">
-        <div>
-          <h2 className="text-center text-3xl font-extrabold text-buap-azul-oscuro">Iniciar Sesión</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">Panel de Administración UVIE</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 bg-[url('https://www.buap.mx/sites/default/files/2022-08/edificio_historico_buap.jpg')] bg-cover bg-center bg-blend-overlay bg-opacity-80 py-12 px-4">
+      <div className="max-w-md w-full space-y-8 bg-white/95 backdrop-blur-sm p-10 rounded-xl shadow-2xl border-t-8 border-buap-azul-oscuro">
+        <div className="text-center">
+          <h2 className="text-2xl font-extrabold text-buap-azul-oscuro uppercase tracking-wider">Panel de Administración</h2>
+          <p className="mt-2 text-sm text-gray-500">Acceso exclusivo para personal UVIE</p>
         </div>
 
-        {error && <div className="bg-red-50 text-red-500 p-3 rounded text-sm text-center">{error}</div>}
+        {error && <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded text-sm text-center">{error}</div>}
 
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+              <label className="block text-sm font-bold text-gray-700">Correo Institucional</label>
               <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-buap-azul-claro focus:border-buap-azul-claro"
+                className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buap-azul-oscuro focus:border-buap-azul-oscuro transition-all"
                 placeholder="admin@buap.mx" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Contraseña</label>
+              <label className="block text-sm font-bold text-gray-700">Contraseña</label>
               <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-buap-azul-claro focus:border-buap-azul-claro"
+                className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buap-azul-oscuro focus:border-buap-azul-oscuro transition-all"
                 placeholder="••••••••" />
             </div>
           </div>
-          <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-buap-azul-oscuro hover:bg-buap-azul-claro transition-colors">
-            Entrar
+          <button type="submit" className="w-full flex justify-center py-3 px-4 rounded-lg shadow-md text-sm font-bold text-white bg-buap-azul-oscuro hover:bg-buap-azul-claro transition-all duration-300">
+            Iniciar Sesión
           </button>
         </form>
+        
+        <div className="text-center mt-6 text-xs text-gray-400">
+          Benemérita Universidad Autónoma de Puebla © 2026
+        </div>
       </div>
     </div>
   );

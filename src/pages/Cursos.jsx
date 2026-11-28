@@ -21,7 +21,6 @@ export default function Cursos() {
           <p className="text-gray-600">Explora nuestra oferta académica disponible en la plataforma Saberes.</p>
         </div>
 
-        {/* Filtros */}
         <div className="flex justify-center gap-2 mb-10 flex-wrap">
           {['todos', 'administracion', 'gastronomia', 'comercio'].map((f) => (
             <button
@@ -38,14 +37,12 @@ export default function Cursos() {
           ))}
         </div>
 
-        {/* Grid de cursos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {cursosFiltrados.map((curso) => {
-            const urlDestino = curso.link_curso || '#'; // Si no hay link, no hace nada
+            const urlDestino = curso.link_curso || '#'; 
             
             return (
               <div key={curso.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col border-t-4 border-t-buap-azul-oscuro">
-                {/* Imagen clickeable */}
                 <a href={urlDestino} target="_blank" rel="noopener noreferrer" className="relative h-48 w-full overflow-hidden bg-gray-200 block group">
                   <img
                     src={curso.imagen_url || 'https://via.placeholder.com/400x200?text=Curso'}
@@ -60,7 +57,6 @@ export default function Cursos() {
                   </div>
                 </a>
 
-                {/* Contenido */}
                 <div className="p-6 flex flex-col flex-1">
                   <h3 className="font-bold text-xl text-buap-azul-oscuro mb-2 line-clamp-2 leading-tight">
                     {curso.titulo}
@@ -72,7 +68,6 @@ export default function Cursos() {
                     {curso.descripcion || 'Sin descripción disponible.'}
                   </p>
                   
-                  {/* Botón de ir al curso */}
                   <a 
                     href={urlDestino} 
                     target="_blank" 
